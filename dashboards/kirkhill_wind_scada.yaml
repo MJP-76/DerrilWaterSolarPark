@@ -81,42 +81,39 @@ views:
             entities:
               - sensor.kirk_hill_wind_farm_power_site
               - sensor.kirk_hill_wind_farm_wind_speed
-          - type: heading
-            heading: Turbine status
-            heading_style: title
-          - type: grid
-            columns: 2
-            square: false
-            cards:
-              - type: tile
-                entity: binary_sensor.turbine_t1_active
-                name: T1
-              - type: tile
-                entity: binary_sensor.turbine_t2_active
-                name: T2
-              - type: tile
-                entity: binary_sensor.turbine_t3_active
-                name: T3
-              - type: tile
-                entity: binary_sensor.turbine_t4_active
-                name: T4
-              - type: tile
-                entity: binary_sensor.turbine_t5_active
-                name: T5
-              - type: tile
-                entity: binary_sensor.turbine_t6_active
-                name: T6
-              - type: tile
-                entity: binary_sensor.turbine_t7_active
-                name: T7
-              - type: tile
-                entity: binary_sensor.turbine_t8_active
-                name: T8
-
   - title: Turbines
     path: turbines
     icon: mdi:wind-turbine
     cards:
+      - type: grid
+        title: Turbine status
+        columns: 2
+        square: false
+        cards:
+          - type: tile
+            entity: binary_sensor.turbine_t1_active
+            name: T1
+          - type: tile
+            entity: binary_sensor.turbine_t2_active
+            name: T2
+          - type: tile
+            entity: binary_sensor.turbine_t3_active
+            name: T3
+          - type: tile
+            entity: binary_sensor.turbine_t4_active
+            name: T4
+          - type: tile
+            entity: binary_sensor.turbine_t5_active
+            name: T5
+          - type: tile
+            entity: binary_sensor.turbine_t6_active
+            name: T6
+          - type: tile
+            entity: binary_sensor.turbine_t7_active
+            name: T7
+          - type: tile
+            entity: binary_sensor.turbine_t8_active
+            name: T8
       - type: custom:kirkhill-wind-turbine-map
         title: Turbine map
         height: 560

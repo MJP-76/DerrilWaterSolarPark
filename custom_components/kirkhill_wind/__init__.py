@@ -359,24 +359,6 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                     farm("farm_wind_speed"),
                                 ],
                             },
-                            {
-                                "type": "heading",
-                                "heading": "Turbine status",
-                                "heading_style": "title",
-                            },
-                            {
-                                "type": "grid",
-                                "columns": 2,
-                                "square": False,
-                                "cards": [
-                                    {
-                                        "type": "tile",
-                                        "entity": turbine(f"T{i}", "active"),
-                                        "name": f"T{i}",
-                                    }
-                                    for i in range(1, 9)
-                                ],
-                            },
                         ],
                     },
                 ],
@@ -386,6 +368,20 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                 "path": "turbines",
                 "icon": "mdi:wind-turbine",
                 "cards": [
+                    {
+                        "type": "grid",
+                        "title": "Turbine status",
+                        "columns": 2,
+                        "square": False,
+                        "cards": [
+                            {
+                                "type": "tile",
+                                "entity": turbine(f"T{i}", "active"),
+                                "name": f"T{i}",
+                            }
+                            for i in range(1, 9)
+                        ],
+                    },
                     {
                         "type": "custom:kirkhill-wind-turbine-map",
                         "title": "Turbine map",

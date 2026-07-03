@@ -2,20 +2,19 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up Kirk Hill Wind Farm SCADA Simulator",
-        "description": "Configure the simulated wind farm site.",
+        "title": "Connect to Kirk Hill Wind Farm",
+        "description": "Enter your Kirk Hill dashboard API key. The site name is used as the integration title in Home Assistant.",
         "data": {
+          "api_key": "API key",
           "site_name": "Site name",
-          "turbine_count": "Number of turbines",
-          "scan_interval": "Simulation tick interval (seconds)"
+          "base_url": "API base URL (advanced)"
         }
       }
     },
     "error": {
       "auth_failed": "Invalid API key. Check your key and try again.",
-      "cannot_connect": "Cannot connect to the Kirk Hill API.",
-      "invalid_response": "The API returned an invalid response.",
-      "unknown": "Unexpected error."
+      "cannot_connect": "Cannot connect to the Kirk Hill API. Check your network and base URL.",
+      "unknown": "Unexpected error. Check the Home Assistant logs."
     },
     "abort": {
       "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
@@ -25,44 +24,12 @@
     "step": {
       "init": {
         "title": "Kirk Hill Wind Farm options",
-        "description": "Adjust the SCADA simulator settings.",
+        "description": "Adjust how often Home Assistant polls the API.",
         "data": {
-          "turbine_count": "Number of turbines",
-          "scan_interval": "Simulation tick interval (seconds)"
-        }
-      }
-    }
-  },
-  "services": {
-    "inject_fault": {
-      "name": "Inject fault",
-      "description": "Force a specific turbine into a fault state.",
-      "fields": {
-        "turbine_id": {
-          "name": "Turbine ID",
-          "description": "The turbine to fault."
-        }
-      }
-    },
-    "reset_turbine": {
-      "name": "Reset turbine",
-      "description": "Reset a turbine back to normal, healthy operation.",
-      "fields": {
-        "turbine_id": {
-          "name": "Turbine ID",
-          "description": "The turbine to reset."
-        }
-      }
-    },
-    "set_wind_speed": {
-      "name": "Set wind speed",
-      "description": "Override the simulated global wind speed.",
-      "fields": {
-        "wind_speed": {
-          "name": "Wind speed",
-          "description": "Wind speed in m/s (0-25)."
+          "scan_interval": "Poll interval (seconds)"
         }
       }
     }
   }
 }
+

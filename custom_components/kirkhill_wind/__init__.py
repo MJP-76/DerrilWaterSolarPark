@@ -1,4 +1,4 @@
-"""The Kirk Hill Wind Farm SCADA Simulator integration."""
+"""The Kirk Hill Wind Farm integration."""
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
@@ -10,7 +10,7 @@ from .services import async_setup_services, async_unload_services
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Kirk Hill Wind Farm SCADA Simulator from a config entry."""
+    """Set up Kirk Hill Wind Farm from a config entry."""
     coordinator = KirkHillWindCoordinator(hass, entry)
 
     await coordinator.async_config_entry_first_refresh()
@@ -27,7 +27,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Re-apply turbine count / scan interval when options change."""
+    """Re-apply scan interval when options change."""
     coordinator: KirkHillWindCoordinator = entry.runtime_data
     coordinator.apply_options()
     await coordinator.async_request_refresh()

@@ -18,6 +18,7 @@ from homeassistant.components.lovelace import dashboard as lovelace_dashboard
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 
 from .const import PLATFORMS
 from .coordinator import KirkHillWindCoordinator
@@ -49,6 +50,7 @@ async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> Non
     coordinator: KirkHillWindCoordinator = entry.runtime_data
     coordinator.apply_options()
     await coordinator.async_request_refresh()
+    await _async_ensure_dashboard(hass, entry)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -103,7 +105,7 @@ async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> No
         lovelace_store = lovelace_dashboard.LovelaceStorage(hass, item)
         hass.data[LOVELACE_DATA].dashboards[url_path] = lovelace_store
 
-    await lovelace_store.async_save(_build_dashboard_config())
+    await lovelace_store.async_save(_build_dashboard_config(hass, entry))
 
     frontend.async_register_built_in_panel(
         hass,
@@ -118,41 +120,65 @@ async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> No
     )
 
 
-def _build_dashboard_config() -> dict:
+def _entity_ids_for_entry(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, str]:
+    """Return a map of entity unique_id to current entity_id."""
+    registry = er.async_get(hass)
+    entity_ids: dict[str, str] = {}
+
+    for entity_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+        if entity_entry.unique_id:
+            entity_ids[entity_entry.unique_id] = entity_entry.entity_id
+
+    return entity_ids
+
+
+def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     """Generate the default storage dashboard config."""
+    entity_ids = _entity_ids_for_entry(hass, entry)
+
+    def farm_scoped(scope: str, suffix: str) -> str:
+        return entity_ids[f"{entry.entry_id}_{scope}_{suffix}"]
+
+    def farm(unique_suffix: str) -> str:
+        return entity_ids[f"{entry.entry_id}_{unique_suffix}"]
+
+    def turbine(turbine_id: str, unique_suffix: str) -> str:
+        return entity_ids[f"{entry.entry_id}_turbine_{turbine_id}_{unique_suffix}"]
+
     owner_generation_entities = [
-        "sensor.kirk_hill_wind_farm_generation_yesterday_owner",
-        "sensor.kirk_hill_wind_farm_generation_today_owner",
-        "sensor.kirk_hill_wind_farm_generation_week_owner",
-        "sensor.kirk_hill_wind_farm_generation_month_owner",
-        "sensor.kirk_hill_wind_farm_generation_ytd_owner",
-        "sensor.kirk_hill_wind_farm_generation_year_owner",
-        "sensor.kirk_hill_wind_farm_generation_alltime_owner",
+        farm_scoped("owner", "farm_generation_yesterday"),
+        farm_scoped("owner", "farm_generation_today"),
+        farm_scoped("owner", "farm_generation_week"),
+        farm_scoped("owner", "farm_generation_month"),
+        farm_scoped("owner", "farm_generation_ytd"),
+        farm_scoped("owner", "farm_generation_year"),
+        farm_scoped("owner", "farm_generation_alltime"),
     ]
     site_generation_entities = [
-        "sensor.kirk_hill_wind_farm_generation_yesterday_site",
-        "sensor.kirk_hill_wind_farm_generation_today_site",
-        "sensor.kirk_hill_wind_farm_generation_week_site",
-        "sensor.kirk_hill_wind_farm_generation_month_site",
-        "sensor.kirk_hill_wind_farm_generation_ytd_site",
-        "sensor.kirk_hill_wind_farm_generation_year_site",
-        "sensor.kirk_hill_wind_farm_generation_alltime_site",
+        farm_scoped("site", "farm_generation_yesterday"),
+        farm_scoped("site", "farm_generation_today"),
+        farm_scoped("site", "farm_generation_week"),
+        farm_scoped("site", "farm_generation_month"),
+        farm_scoped("site", "farm_generation_ytd"),
+        farm_scoped("site", "farm_generation_year"),
+        farm_scoped("site", "farm_generation_alltime"),
     ]
 
     turbine_cards = []
     for i in range(1, 9):
+        turbine_id = f"T{i}"
         turbine_cards.append(
             {
                 "type": "entities",
-                "title": f"Turbine T{i}",
+                "title": f"Turbine {turbine_id}",
                 "entities": [
-                    f"sensor.turbine_t{i}_power_owner",
-                    f"sensor.turbine_t{i}_power_site",
-                    f"sensor.turbine_t{i}_capacity_factor_owner",
-                    f"sensor.turbine_t{i}_capacity_factor_site",
-                    f"sensor.turbine_t{i}_wind_speed",
-                    f"sensor.turbine_t{i}_state",
-                    f"binary_sensor.turbine_t{i}_active",
+                    turbine(turbine_id, "owner_power"),
+                    turbine(turbine_id, "site_power"),
+                    turbine(turbine_id, "owner_capacity_factor"),
+                    turbine(turbine_id, "site_capacity_factor"),
+                    turbine(turbine_id, "wind_speed"),
+                    turbine(turbine_id, "state_text"),
+                    turbine(turbine_id, "active"),
                 ],
             }
         )
@@ -192,8 +218,8 @@ def _build_dashboard_config() -> dict:
                                 "title": "Owner metrics",
                                 "show_header_toggle": False,
                                 "entities": [
-                                    "sensor.kirk_hill_wind_farm_power_owner",
-                                    "sensor.kirk_hill_wind_farm_capacity_factor_owner",
+                                    farm_scoped("owner", "farm_power"),
+                                    farm_scoped("owner", "farm_capacity_factor"),
                                     *owner_generation_entities,
                                 ],
                             },
@@ -202,8 +228,8 @@ def _build_dashboard_config() -> dict:
                                 "title": "Owner and wind (last 6 hours)",
                                 "hours_to_show": 6,
                                 "entities": [
-                                    "sensor.kirk_hill_wind_farm_power_owner",
-                                    "sensor.kirk_hill_wind_farm_wind_speed",
+                                    farm_scoped("owner", "farm_power"),
+                                    farm("farm_wind_speed"),
                                 ],
                             },
                             {
@@ -217,7 +243,7 @@ def _build_dashboard_config() -> dict:
                                 "default_zoom": 15,
                                 "theme_mode": "auto",
                                 "entities": [
-                                    f"sensor.turbine_t{i}_state" for i in range(1, 9)
+                                    turbine(f"T{i}", "state_text") for i in range(1, 9)
                                 ],
                             },
                         ],
@@ -235,12 +261,12 @@ def _build_dashboard_config() -> dict:
                                 "title": "Site metrics",
                                 "show_header_toggle": False,
                                 "entities": [
-                                    "sensor.kirk_hill_wind_farm_power_site",
-                                    "sensor.kirk_hill_wind_farm_capacity_factor_site",
-                                    "sensor.kirk_hill_wind_farm_wind_speed",
-                                    "sensor.kirk_hill_wind_farm_active_turbines",
-                                    "sensor.kirk_hill_wind_farm_inactive_turbines",
-                                    "binary_sensor.kirk_hill_wind_farm_alarm",
+                                    farm_scoped("site", "farm_power"),
+                                    farm_scoped("site", "farm_capacity_factor"),
+                                    farm("farm_wind_speed"),
+                                    farm("farm_active_turbines"),
+                                    farm("farm_inactive_turbines"),
+                                    farm("farm_alarm"),
                                     *site_generation_entities,
                                 ],
                             },
@@ -249,8 +275,8 @@ def _build_dashboard_config() -> dict:
                                 "title": "Site and wind (last 6 hours)",
                                 "hours_to_show": 6,
                                 "entities": [
-                                    "sensor.kirk_hill_wind_farm_power_site",
-                                    "sensor.kirk_hill_wind_farm_wind_speed",
+                                    farm_scoped("site", "farm_power"),
+                                    farm("farm_wind_speed"),
                                 ],
                             },
                             {
@@ -265,7 +291,7 @@ def _build_dashboard_config() -> dict:
                                 "cards": [
                                     {
                                         "type": "tile",
-                                        "entity": f"binary_sensor.turbine_t{i}_active",
+                                        "entity": turbine(f"T{i}", "active"),
                                         "name": f"T{i}",
                                     }
                                     for i in range(1, 9)

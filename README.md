@@ -1,6 +1,6 @@
 # Derril Water Solar Park
 ## ⚠️ **IMPORTANT NOTICE**
-**This repository is a minimal baseline/framework for Derril Water Solar Park when it's API comes online**
+**This repository is a minimal baseline/framework for Derril Water Solar Park when it's API comes online and is WIP**
 
 [![Home Assistant][ha-badge]][home-assistant]
 [![hacs][hacs-badge]][hacs]

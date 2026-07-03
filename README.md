@@ -108,11 +108,13 @@ The generated dashboard includes:
 - owner and site generation cards shown first in each overview section
 - all owner/site generation timeframe entities
 - live farm wind and turbine availability
-- a turbine map section styled closer to the standalone example
+- a larger full-width animated turbine map that spins each turbine icon in proportion to live output
 - full per-turbine owner/site power, capacity, wind, state, and active status
 - generation display cards that switch between **kWh** and **MWh** automatically and show **2 decimal places**
 
 The generated dashboard now uses the **live entity registry** for the current config entry, so it follows your real entity IDs instead of relying on hardcoded names.
+
+The animated map card is bundled by the integration and loaded automatically with the dashboard. After upgrading, reload the integration or restart Home Assistant so the new frontend resource is picked up.
 
 For manual import or customization, a dashboard YAML is also provided at [`dashboards/kirkhill_wind_scada.yaml`](dashboards/kirkhill_wind_scada.yaml).
 

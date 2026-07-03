@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import voluptuous as vol
 
 from homeassistant.components import frontend
+from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.lovelace import (
     CONF_ICON,
     CONF_REQUIRE_ADMIN,
@@ -25,6 +28,9 @@ from .coordinator import KirkHillWindCoordinator
 from .services import async_setup_services, async_unload_services
 
 _LOGGER = logging.getLogger(__name__)
+_FRONTEND_URL = "/kirkhill_wind/turbine-map-card.js"
+_FRONTEND_FILE = Path(__file__).parent / "frontend" / "kirkhill-wind-turbine-map.js"
+_FRONTEND_REGISTERED = "kirkhill_wind_frontend_registered"
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -40,6 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await _async_register_frontend(hass)
     await _async_ensure_dashboard(hass, entry)
 
     return True
@@ -62,6 +69,18 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await async_unload_services(hass)
 
     return unload_ok
+
+
+async def _async_register_frontend(hass: HomeAssistant) -> None:
+    """Register the bundled custom Lovelace card for the turbine map."""
+    if hass.data.get(_FRONTEND_REGISTERED):
+        return
+
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(_FRONTEND_URL, str(_FRONTEND_FILE), False)]
+    )
+    add_extra_js_url(hass, f"{_FRONTEND_URL}?v={int(_FRONTEND_FILE.stat().st_mtime)}")
+    hass.data[_FRONTEND_REGISTERED] = True
 
 
 async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -198,6 +217,16 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
         ("Year", farm_scoped("site", "farm_generation_year")),
         ("All time", farm_scoped("site", "farm_generation_alltime")),
     ]
+    turbine_map_entities = [
+        {
+            "name": f"T{i}",
+            "state_entity": turbine(f"T{i}", "state_text"),
+            "power_entity": turbine(f"T{i}", "site_power"),
+            "capacity_entity": turbine(f"T{i}", "site_capacity_factor"),
+            "active_entity": turbine(f"T{i}", "active"),
+        }
+        for i in range(1, 9)
+    ]
 
     turbine_cards = []
     for i in range(1, 9):
@@ -248,6 +277,24 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                     },
                     {
                         "type": "grid",
+                        "column_span": 2,
+                        "cards": [
+                            {
+                                "type": "heading",
+                                "heading": "Turbine map",
+                                "heading_style": "title",
+                            },
+                            {
+                                "type": "custom:kirkhill-wind-turbine-map",
+                                "title": "",
+                                "zoom": 17,
+                                "height": 560,
+                                "turbines": turbine_map_entities,
+                            },
+                        ],
+                    },
+                    {
+                        "type": "grid",
                         "cards": [
                             {
                                 "type": "heading",
@@ -280,20 +327,6 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                 "entities": [
                                     farm_scoped("owner", "farm_power"),
                                     farm("farm_wind_speed"),
-                                ],
-                            },
-                            {
-                                "type": "heading",
-                                "heading": "Turbine map",
-                                "heading_style": "title",
-                            },
-                            {
-                                "type": "map",
-                                "title": "",
-                                "default_zoom": 15,
-                                "theme_mode": "auto",
-                                "entities": [
-                                    turbine(f"T{i}", "state_text") for i in range(1, 9)
                                 ],
                             },
                         ],

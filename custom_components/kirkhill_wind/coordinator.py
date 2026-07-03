@@ -62,11 +62,12 @@ class KirkHillWindCoordinator(DataUpdateCoordinator):
         """Fetch current owner/site data, turbine coordinates, and range summaries."""
         async with aiohttp.ClientSession() as session:
             try:
-                owner_data, site_data, site_turbines, timeframe_summaries = await asyncio.gather(
+                owner_data, site_data, site_turbines, timeframe_summaries, wind_speed_today = await asyncio.gather(
                     self.client.get_current(session, SCOPE_OWNER),
                     self.client.get_current(session, SCOPE_SITE),
                     self.client.get_turbines(session, SCOPE_SITE),
                     self._fetch_timeframe_summaries(session),
+                    self._fetch_latest_wind_speed(session),
                 )
             except KirkHillApiError as exc:
                 raise UpdateFailed(str(exc)) from exc
@@ -88,6 +89,7 @@ class KirkHillWindCoordinator(DataUpdateCoordinator):
             SCOPE_SITE: site_data,
             "coordinates": coordinates,
             "timeframe_summaries": timeframe_summaries,
+            "wind_speed_today": wind_speed_today,
         }
 
     async def _fetch_timeframe_summaries(
@@ -126,3 +128,20 @@ class KirkHillWindCoordinator(DataUpdateCoordinator):
             summaries[scope][timeframe] = summary if isinstance(summary, dict) else {}
 
         return summaries
+
+    async def _fetch_latest_wind_speed(self, session: aiohttp.ClientSession) -> float | None:
+        payload = await self.client.get_wind_speed(
+            session,
+            scope=SCOPE_SITE,
+            range_value="today",
+        )
+        series = payload.get("series", [])
+        if not isinstance(series, list) or not series:
+            return None
+
+        latest = series[-1]
+        if not isinstance(latest, dict):
+            return None
+
+        value = latest.get("wind_speed_mps")
+        return value if isinstance(value, (int, float)) else None

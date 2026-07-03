@@ -73,6 +73,20 @@ class KirkHillApiClient:
         )
         return body["data"]
 
+    async def get_wind_speed(
+        self,
+        session: aiohttp.ClientSession,
+        scope: str = SCOPE_OWNER,
+        range_value: str = "today",
+    ) -> dict[str, Any]:
+        """GET /api/v1/wind-speed?scope={scope}&range={range_value}."""
+        body = await self._get(
+            session,
+            "/api/v1/wind-speed",
+            {"scope": scope, "range": range_value},
+        )
+        return body["data"]
+
     async def test(self, session: aiohttp.ClientSession) -> None:
         """Validate the API key by making a minimal current request."""
         await self.get_current(session, SCOPE_OWNER)

@@ -8,7 +8,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import PERCENTAGE, UnitOfEnergy, UnitOfPower, UnitOfSpeed
 
-from .const import SCOPES, SCOPE_OWNER, TIMEFRAME_ORDER
+from .const import SCOPES, SCOPE_OWNER, SCOPE_SITE, TIMEFRAME_ORDER
 from .entity import (
     KirkHillEntity,
     KirkHillScopedEntity,
@@ -59,15 +59,22 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class FarmPowerSensor(KirkHillScopedEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_native_unit_of_measurement = UnitOfPower.KILO_WATT
 
     def __init__(self, coordinator, entry, scope: str):
         super().__init__(coordinator, entry, scope, "farm_power")
         self._attr_name = f"Power ({scope})"
+        self._attr_native_unit_of_measurement = (
+            "MW" if scope == SCOPE_SITE else UnitOfPower.KILO_WATT
+        )
 
     @property
     def native_value(self):
-        return self._scope_data()["summary"].get("total_power_kw")
+        value = self._scope_data()["summary"].get("total_power_kw")
+        if not isinstance(value, (int, float)):
+            return None
+        if self._scope == SCOPE_SITE:
+            return value / 1000
+        return value
 
 
 class FarmCapacityFactorSensor(KirkHillScopedEntity, SensorEntity):
@@ -81,6 +88,14 @@ class FarmCapacityFactorSensor(KirkHillScopedEntity, SensorEntity):
 
     @property
     def native_value(self):
+        timeframe_summary = (
+            self.coordinator.data.get("timeframe_summaries", {})
+            .get(self._scope, {})
+            .get("today", {})
+        )
+        value = timeframe_summary.get("capacity_factor_percent")
+        if isinstance(value, (int, float)):
+            return value
         return self._scope_data()["summary"].get("capacity_factor_percent")
 
 
@@ -101,7 +116,11 @@ class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
             .get(self._scope, {})
             .get(self._timeframe, {})
         )
-        return summary.get("total_kwh")
+        value = summary.get("total_generation_kwh")
+        if isinstance(value, (int, float)):
+            return value
+        value = summary.get("total_kwh")
+        return value if isinstance(value, (int, float)) else None
 
     @property
     def extra_state_attributes(self) -> dict:
@@ -121,6 +140,9 @@ class FarmWindSpeedSensor(KirkHillEntity, SensorEntity):
 
     @property
     def native_value(self):
+        value = self.coordinator.data.get("wind_speed_today")
+        if isinstance(value, (int, float)):
+            return value
         return self.coordinator.data[SCOPE_OWNER]["summary"].get("wind_speed_mps")
 
 

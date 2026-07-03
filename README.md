@@ -1,7 +1,7 @@
 # Kirk Hill Wind Farm Integration
 
-[![hacs][hacs-badge]][hacs]
 [![Home Assistant][ha-badge]][home-assistant]
+[![hacs][hacs-badge]][hacs]
 [![GitHub][github-badge]][repo]
 [![GitHub Copilot][copilot-badge]][copilot]
 

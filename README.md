@@ -14,9 +14,11 @@ It pulls current data for both OpenAPI scopes:
 - `owner` (your ownership share)
 - `site` (whole-site values)
 
-The integration is built using GITHubCopilot and if you like my work the please support me
-<br><a href="https://www.buymeacoffee.com/mjp76" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-<br>Use my [Octopus.Energy 🐙](https://share.octopus.energy/iron-moose-196) referral code. You get £50 credit for joining and I get £50 credit.
+Built with GitHub Copilot. If you find this integration useful, you can support my work here:
+
+<a href="https://www.buymeacoffee.com/mjp76" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose-196) — you get GBP50 credit for joining, and I get GBP50 too.
 
 ## Features
 - Live API polling (`cloud_polling` integration)

@@ -20,7 +20,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 
-from .const import PLATFORMS
+from .const import CONF_CREATE_DASHBOARD, DEFAULT_CREATE_DASHBOARD, PLATFORMS
 from .coordinator import KirkHillWindCoordinator
 from .services import async_setup_services, async_unload_services
 
@@ -70,6 +70,10 @@ async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> No
         _LOGGER.debug("Lovelace not loaded yet; skipping dashboard auto-create")
         return
 
+    if not _dashboard_enabled(entry):
+        _LOGGER.debug("Dashboard creation disabled for config entry %s", entry.entry_id)
+        return
+
     url_path = "kirk-hill-wind-dashboard"
     title = "Kirk Hill Wind Farm"
     icon = "mdi:wind-turbine"
@@ -117,6 +121,14 @@ async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> No
         sidebar_icon=item.get(CONF_ICON, icon),
         config={"mode": "storage"},
         update=True,
+    )
+
+
+def _dashboard_enabled(entry: ConfigEntry) -> bool:
+    """Return whether dashboard creation is enabled for this config entry."""
+    return entry.options.get(
+        CONF_CREATE_DASHBOARD,
+        entry.data.get(CONF_CREATE_DASHBOARD, DEFAULT_CREATE_DASHBOARD),
     )
 
 

@@ -6,6 +6,7 @@
         "description": "Enter your Kirk Hill dashboard API key. The site name is used as the integration title in Home Assistant.",
         "data": {
           "api_key": "API key",
+          "create_dashboard": "Create dashboard automatically",
           "site_name": "Site name",
           "base_url": "API base URL (advanced)"
         }
@@ -26,10 +27,10 @@
         "title": "Kirk Hill Wind Farm options",
         "description": "Adjust how often Home Assistant polls the API.",
         "data": {
+          "create_dashboard": "Create dashboard automatically",
           "scan_interval": "Poll interval (seconds)"
         }
       }
     }
   }
 }
-

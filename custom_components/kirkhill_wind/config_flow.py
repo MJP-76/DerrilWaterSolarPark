@@ -9,14 +9,21 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .api import KirkHillApiClient
 from .const import (
     CONF_API_KEY,
     CONF_BASE_URL,
+    CONF_CREATE_DASHBOARD,
     CONF_SCAN_INTERVAL,
     CONF_SITE_NAME,
     DEFAULT_BASE_URL,
+    DEFAULT_CREATE_DASHBOARD,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_SITE_NAME,
     DOMAIN,
@@ -51,6 +58,9 @@ class KirkHillWindConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data={
                         CONF_API_KEY: user_input[CONF_API_KEY],
                         CONF_BASE_URL: user_input.get(CONF_BASE_URL, DEFAULT_BASE_URL),
+                        CONF_CREATE_DASHBOARD: user_input.get(
+                            CONF_CREATE_DASHBOARD, DEFAULT_CREATE_DASHBOARD
+                        ),
                         CONF_SITE_NAME: user_input.get(CONF_SITE_NAME, DEFAULT_SITE_NAME),
                         CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL,
                     },
@@ -60,10 +70,15 @@ class KirkHillWindConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_API_KEY): str,
+                    vol.Required(CONF_API_KEY): TextSelector(
+                        TextSelectorConfig(type=TextSelectorType.PASSWORD)
+                    ),
                     vol.Optional(
                         CONF_SITE_NAME, default=DEFAULT_SITE_NAME
                     ): str,
+                    vol.Optional(
+                        CONF_CREATE_DASHBOARD, default=DEFAULT_CREATE_DASHBOARD
+                    ): bool,
                     vol.Optional(CONF_BASE_URL, default=DEFAULT_BASE_URL): str,
                 }
             ),
@@ -119,6 +134,13 @@ class KirkHillWindOptionsFlow(config_entries.OptionsFlow):
                     ): vol.All(
                         int, vol.Range(min=MIN_SCAN_INTERVAL, max=MAX_SCAN_INTERVAL)
                     ),
+                    vol.Required(
+                        CONF_CREATE_DASHBOARD,
+                        default=current.get(
+                            CONF_CREATE_DASHBOARD,
+                            DEFAULT_CREATE_DASHBOARD,
+                        ),
+                    ): bool,
                 }
             ),
         )

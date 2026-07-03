@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Derril Water Solar Park",
+        "description": "Enter an API key and the site name for this solar integration starter.",
+        "data": {
+          "api_key": "API key",
+          "site_name": "Site name"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single instance of Derril Water Solar Park is allowed."
+    }
+  }
+}

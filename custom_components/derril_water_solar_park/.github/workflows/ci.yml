@@ -23,8 +23,8 @@ jobs:
 
       - name: Validate integration structure
         run: |
-          python -m compileall custom_components/kirkhill_wind
+          python -m compileall custom_components/derril_water_solar_park
 
       - name: Check manifest JSON
         run: |
-          python -c "import json; json.load(open('custom_components/kirkhill_wind/manifest.json'))"
+          python -c "import json; json.load(open('custom_components/derril_water_solar_park/manifest.json'))"

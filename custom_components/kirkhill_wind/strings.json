@@ -9,6 +9,12 @@
         }
       }
     },
+    "error": {
+      "auth_failed": "Invalid API key. Check your key and try again.",
+      "cannot_connect": "Cannot connect to the Kirk Hill API.",
+      "invalid_response": "The API returned an invalid response.",
+      "unknown": "Unexpected error."
+    },
     "abort": {
       "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
     }

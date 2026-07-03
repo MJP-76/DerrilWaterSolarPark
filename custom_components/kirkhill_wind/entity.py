@@ -3,6 +3,7 @@ from __future__ import annotations
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.entity import Entity
 
+
 class KirkHillEntity(CoordinatorEntity, Entity):
     """Base entity."""
 

@@ -56,6 +56,30 @@ class KirkHillApiClient:
         except asyncio.TimeoutError as exc:
             raise KirkHillConnectionError("Request timed out") from exc
 
+    async def get_turbines(
+        self, session: aiohttp.ClientSession, scope: str = SCOPE_OWNER
+    ) -> list[dict[str, Any]]:
+        """GET /api/v1/turbines?scope={scope}
+
+        Returns per-turbine rows including coordinates.
+        """
+        url = f"{self._base_url}/api/v1/turbines"
+        try:
+            async with session.get(
+                url, params={"scope": scope}, headers=self._headers, timeout=TIMEOUT
+            ) as resp:
+                if resp.status == 401:
+                    raise KirkHillAuthError("Invalid or missing API key")
+                resp.raise_for_status()
+                body = await resp.json()
+                return body["data"]["turbines"]
+        except KirkHillAuthError:
+            raise
+        except aiohttp.ClientError as exc:
+            raise KirkHillConnectionError(str(exc)) from exc
+        except asyncio.TimeoutError as exc:
+            raise KirkHillConnectionError("Request timed out") from exc
+
     async def test(self, session: aiohttp.ClientSession) -> None:
         """Validate the API key by making a minimal current request."""
         await self.get_current(session, SCOPE_OWNER)

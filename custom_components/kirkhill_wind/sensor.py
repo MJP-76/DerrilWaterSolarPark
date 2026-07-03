@@ -204,8 +204,13 @@ class TurbineStateSensor(KirkHillTurbineEntity, SensorEntity):
         t = self._turbine_data(SCOPE_OWNER)
         if t is None:
             return {}
+        coords = self.coordinator.data.get("coordinates", {}).get(self._turbine_id, {})
         return {
             "status": t.get("status"),
             "status_started_at": t.get("status_started_at"),
             "state_started_at": t.get("state_started_at"),
+            "latitude": coords.get("latitude"),
+            "longitude": coords.get("longitude"),
+            "location_source": coords.get("source"),
+            "openstreetmap_node_id": coords.get("openstreetmap_node_id"),
         }

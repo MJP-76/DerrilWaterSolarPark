@@ -60,17 +60,31 @@ class KirkHillWindCoordinator(DataUpdateCoordinator):
         self.update_interval = timedelta(seconds=scan_interval)
 
     async def _async_update_data(self) -> dict:
-        """Fetch /api/v1/current for owner and site scopes concurrently."""
+        """Fetch current owner/site data and turbine coordinates."""
         async with aiohttp.ClientSession() as session:
             try:
-                owner_data, site_data = await asyncio.gather(
+                owner_data, site_data, site_turbines = await asyncio.gather(
                     self.client.get_current(session, SCOPE_OWNER),
                     self.client.get_current(session, SCOPE_SITE),
+                    self.client.get_turbines(session, SCOPE_SITE),
                 )
             except KirkHillApiError as exc:
                 raise UpdateFailed(str(exc)) from exc
 
+        coordinates: dict[str, dict[str, float | str | None]] = {}
+        for row in site_turbines:
+            turbine_id = row.get("id")
+            coord = row.get("coordinates") or {}
+            if turbine_id:
+                coordinates[turbine_id] = {
+                    "latitude": coord.get("latitude"),
+                    "longitude": coord.get("longitude"),
+                    "source": coord.get("source"),
+                    "openstreetmap_node_id": coord.get("openstreetmap_node_id"),
+                }
+
         return {
             SCOPE_OWNER: owner_data,
             SCOPE_SITE: site_data,
+            "coordinates": coordinates,
         }

@@ -1,7 +1,7 @@
 # Kirk Hill Wind Farm Integration
 
-[![hacs][hacs-badge]][hacs]
 [![Home Assistant][ha-badge]][home-assistant]
+[![hacs][hacs-badge]][hacs]
 [![GitHub][github-badge]][repo]
 [![GitHub Copilot][copilot-badge]][copilot]
 
@@ -45,8 +45,6 @@ Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose
 - Dashboard YAML file is still included for manual import/customization
 
 ## Installation
-<br>[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
-
 1. Add this repository to HACS (Custom Repositories)
 2. Install "Kirk Hill Wind Farm"
 3. Restart Home Assistant

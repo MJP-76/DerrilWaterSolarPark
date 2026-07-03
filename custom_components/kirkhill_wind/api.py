@@ -15,7 +15,7 @@ class KirkHillApi:
         params = {"scope": scope}
 
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "Authorization": f"******",
             "Accept": "application/json",
         }
 

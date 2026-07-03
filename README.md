@@ -15,7 +15,7 @@ It pulls current data for both OpenAPI scopes:
 - `site` (whole-site values)
 
 
-<br>If you find this integration useful, you can support my work here:
+<br>And here is my shameless plug, If you find this integration useful, you can support my work here:
 
 <a href="https://www.buymeacoffee.com/mjp76" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 

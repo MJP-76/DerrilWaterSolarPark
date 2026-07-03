@@ -1,5 +1,5 @@
 {
-  "name": "Kirk Hill Wind SCADA Simulator",
+  "name": "Kirk Hill Wind",
   "render_readme": true,
   "domains": ["kirkhill_wind"],
   "country": "GB",

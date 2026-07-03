@@ -277,24 +277,6 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                     },
                     {
                         "type": "grid",
-                        "column_span": 2,
-                        "cards": [
-                            {
-                                "type": "heading",
-                                "heading": "Turbine map",
-                                "heading_style": "title",
-                            },
-                            {
-                                "type": "custom:kirkhill-wind-turbine-map",
-                                "title": "",
-                                "zoom": 17,
-                                "height": 560,
-                                "turbines": turbine_map_entities,
-                            },
-                        ],
-                    },
-                    {
-                        "type": "grid",
                         "cards": [
                             {
                                 "type": "heading",
@@ -404,6 +386,12 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                 "path": "turbines",
                 "icon": "mdi:wind-turbine",
                 "cards": [
+                    {
+                        "type": "custom:kirkhill-wind-turbine-map",
+                        "title": "Turbine map",
+                        "height": 560,
+                        "turbines": turbine_map_entities,
+                    },
                     {
                         "type": "grid",
                         "columns": 2,

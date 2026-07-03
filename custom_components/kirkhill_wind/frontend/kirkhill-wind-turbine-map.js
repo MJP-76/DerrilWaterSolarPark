@@ -21,7 +21,7 @@ class KirkHillWindTurbineMap extends HTMLElement {
 
     this.config = {
       title: "",
-      zoom: 17,
+      zoom: null,
       height: 560,
       ...config,
     };
@@ -53,7 +53,6 @@ class KirkHillWindTurbineMap extends HTMLElement {
 
     const width = Math.max(Math.round(this.getBoundingClientRect().width) || 900, 320);
     const height = Number(this.config.height) || 560;
-    const zoom = Math.max(1, Math.min(19, Number(this.config.zoom) || 17));
     const header = this.config.title ? ` header="${this._escape(this.config.title)}"` : "";
     const turbines = this._collectTurbines();
     const visibleTurbines = turbines.filter(
@@ -70,8 +69,9 @@ class KirkHillWindTurbineMap extends HTMLElement {
       return;
     }
 
-    const center = this._centerCoordinates(visibleTurbines);
-    const origin = this._originPixels(center, zoom, width, height);
+    const viewport = this._resolveViewport(visibleTurbines, width, height);
+    const zoom = viewport.zoom;
+    const origin = viewport.origin;
     const tiles = this._renderTiles(origin, zoom, width, height);
     const markers = visibleTurbines
       .map((turbine) => this._renderMarker(turbine, origin, zoom))
@@ -113,6 +113,51 @@ class KirkHillWindTurbineMap extends HTMLElement {
     });
   }
 
+  _resolveViewport(turbines, width, height) {
+    const configuredZoom = Number(this.config.zoom);
+    const manualZoom = Number.isFinite(configuredZoom)
+      ? Math.max(1, Math.min(19, configuredZoom))
+      : null;
+
+    if (manualZoom !== null) {
+      const center = this._centerCoordinates(turbines);
+      const projected = this._project(center.latitude, center.longitude, manualZoom);
+      return {
+        zoom: manualZoom,
+        origin: {
+          x: projected.x - width / 2,
+          y: projected.y - height / 2,
+        },
+      };
+    }
+
+    const padding = 72;
+    const usableWidth = Math.max(width - padding * 2, 120);
+    const usableHeight = Math.max(height - padding * 2, 120);
+
+    for (let zoom = 19; zoom >= 1; zoom -= 1) {
+      const bounds = this._projectedBounds(turbines, zoom);
+      if (bounds.width <= usableWidth && bounds.height <= usableHeight) {
+        return {
+          zoom,
+          origin: {
+            x: bounds.centerX - width / 2,
+            y: bounds.centerY - height / 2,
+          },
+        };
+      }
+    }
+
+    const bounds = this._projectedBounds(turbines, 1);
+    return {
+      zoom: 1,
+      origin: {
+        x: bounds.centerX - width / 2,
+        y: bounds.centerY - height / 2,
+      },
+    };
+  }
+
   _centerCoordinates(turbines) {
     const latitude =
       turbines.reduce((sum, turbine) => sum + turbine.latitude, 0) / turbines.length;
@@ -121,11 +166,22 @@ class KirkHillWindTurbineMap extends HTMLElement {
     return { latitude, longitude };
   }
 
-  _originPixels(center, zoom, width, height) {
-    const projected = this._project(center.latitude, center.longitude, zoom);
+  _projectedBounds(turbines, zoom) {
+    const projected = turbines.map((turbine) =>
+      this._project(turbine.latitude, turbine.longitude, zoom),
+    );
+    const xs = projected.map((point) => point.x);
+    const ys = projected.map((point) => point.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+
     return {
-      x: projected.x - width / 2,
-      y: projected.y - height / 2,
+      width: maxX - minX,
+      height: maxY - minY,
+      centerX: (minX + maxX) / 2,
+      centerY: (minY + maxY) / 2,
     };
   }
 

@@ -1,5 +1,9 @@
 # Kirk Hill Wind Farm Integration
 
+## ⚠️ **IMPORTANT V1 UPGRADE NOTICE**
+
+**IF YOU INSTALLED THE INITIAL / V1 RELEASE, YOU MUST REMOVE THE HACS REPOSITORY AND ADD IT AGAIN, THEN REMOVE AND RE-ADD THE INTEGRATION IN HOME ASSISTANT UNDER DEVICES & SERVICES.**
+
 [![Home Assistant][ha-badge]][home-assistant]
 [![hacs][hacs-badge]][hacs]
 [![GitHub][github-badge]][repo]
@@ -108,7 +112,9 @@ The generated dashboard includes:
 - owner and site generation cards shown first in each overview section
 - all owner/site generation timeframe entities
 - live farm wind and turbine availability
-- a larger full-width animated turbine map that spins each turbine icon in proportion to live output
+- a larger full-width animated turbine map on the **Turbines** tab
+- automatic map zoom that fits all turbines by default
+- turbine icons that spin in proportion to live output
 - full per-turbine owner/site power, capacity, wind, state, and active status
 - generation display cards that switch between **kWh** and **MWh** automatically and show **2 decimal places**
 

@@ -2,6 +2,18 @@
 
 A Home Assistant custom component that reads live data from the Kirk Hill Wind Farm API.
 
+<p align="center">
+  <a href="https://www.home-assistant.io/" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.simpleicons.org/homeassistant/41BDF5" alt="Home Assistant" height="40">
+  </a>
+  <a href="https://github.com/MJP-76/KirkHillWindFarm" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.simpleicons.org/github" alt="GitHub" height="40">
+  </a>
+  <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">
+    <img src="https://cdn.simpleicons.org/githubcopilot" alt="GitHub Copilot" height="40">
+  </a>
+</p>
+
 It pulls current data for both OpenAPI scopes:
 - `owner` (your ownership share)
 - `site` (whole-site values)

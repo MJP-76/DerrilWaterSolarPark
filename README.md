@@ -1,21 +1,14 @@
 # Kirk Hill Wind Farm Integration
-[![hacs][hacs-badge]][hacs] 
-A Home Assistant custom component that reads live data from the Kirk Hill Wind Farm API
 
->I am not affiliated with Kirk Hill Co-op other than being a member
->This is a community integration that reads the dashboard's public endpoints with your personal API key
+[![hacs][hacs-badge]][hacs]
+[![Home Assistant][ha-badge]][home-assistant]
+[![GitHub][github-badge]][repo]
+[![GitHub Copilot][copilot-badge]][copilot]
 
-<p align="center">
-  <a href="https://www.home-assistant.io/" target="_blank" rel="noopener noreferrer">
-    <img src="https://cdn.simpleicons.org/homeassistant/41BDF5" alt="Home Assistant" height="40">
-  </a>
-  <a href="https://github.com/MJP-76/KirkHillWindFarm" target="_blank" rel="noopener noreferrer">
-    <img src="https://cdn.simpleicons.org/github" alt="GitHub" height="40">
-  </a>
-  <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">
-    <img src="https://cdn.simpleicons.org/githubcopilot" alt="GitHub Copilot" height="40">
-  </a>
-</p>
+A Home Assistant custom component for the Kirk Hill Wind Farm dashboard API.
+
+> **Not affiliated with Kirk Hill Co-op.** This is a community integration that
+> reads the dashboard's public API endpoints with your personal API key.
 
 It pulls current data for both OpenAPI scopes:
 - `owner` (your ownership share)
@@ -109,5 +102,11 @@ MIT
 [brands]: https://github.com/home-assistant/brands
 [hacs]: https://github.com/hacs/integration
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
+[home-assistant]: https://www.home-assistant.io/
+[ha-badge]: https://img.shields.io/badge/Home%20Assistant-41BDF5?style=flat-square&logo=homeassistant&logoColor=white
+[repo]: https://github.com/MJP-76/KirkHillWindFarm
+[github-badge]: https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github
+[copilot]: https://github.com/features/copilot
+[copilot-badge]: https://img.shields.io/badge/GitHub%20Copilot-Built%20with-000000?style=flat-square&logo=githubcopilot
 [ci]: https://github.com/njp970/ha_kirkhill/actions/workflows/ci.yml
 [ci-badge]: https://github.com/njp970/ha_kirkhill/actions/workflows/ci.yml/badge.svg

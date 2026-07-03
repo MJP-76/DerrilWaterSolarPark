@@ -27,6 +27,20 @@ TIMEFRAME_LABELS = {
 }
 
 
+def _as_float(value) -> float | None:
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        normalized = value.replace(",", "").strip()
+        if not normalized:
+            return None
+        try:
+            return float(normalized)
+        except ValueError:
+            return None
+    return None
+
+
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = entry.runtime_data
 
@@ -69,8 +83,8 @@ class FarmPowerSensor(KirkHillScopedEntity, SensorEntity):
 
     @property
     def native_value(self):
-        value = self._scope_data()["summary"].get("total_power_kw")
-        if not isinstance(value, (int, float)):
+        value = _as_float(self._scope_data()["summary"].get("total_power_kw"))
+        if value is None:
             return None
         if self._scope == SCOPE_SITE:
             return value / 1000
@@ -93,10 +107,10 @@ class FarmCapacityFactorSensor(KirkHillScopedEntity, SensorEntity):
             .get(self._scope, {})
             .get("today", {})
         )
-        value = timeframe_summary.get("capacity_factor_percent")
-        if isinstance(value, (int, float)):
+        value = _as_float(timeframe_summary.get("capacity_factor_percent"))
+        if value is not None:
             return value
-        return self._scope_data()["summary"].get("capacity_factor_percent")
+        return _as_float(self._scope_data()["summary"].get("capacity_factor_percent"))
 
 
 class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
@@ -116,13 +130,10 @@ class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
             .get(self._scope, {})
             .get(self._timeframe, {})
         )
-        value = summary.get("total_generation_kwh")
-        if isinstance(value, (int, float)):
-            return float(value)
-        value = summary.get("total_kwh")
-        if isinstance(value, (int, float)):
-            return float(value)
-        return None
+        value = _as_float(summary.get("total_generation_kwh"))
+        if value is not None:
+            return value
+        return _as_float(summary.get("total_kwh"))
 
     @property
     def native_unit_of_measurement(self):
@@ -158,10 +169,10 @@ class FarmWindSpeedSensor(KirkHillEntity, SensorEntity):
 
     @property
     def native_value(self):
-        value = self.coordinator.data.get("wind_speed_today")
-        if isinstance(value, (int, float)):
+        value = _as_float(self.coordinator.data.get("wind_speed_today"))
+        if value is not None:
             return value
-        return self.coordinator.data[SCOPE_OWNER]["summary"].get("wind_speed_mps")
+        return _as_float(self.coordinator.data[SCOPE_OWNER]["summary"].get("wind_speed_mps"))
 
 
 class FarmActiveTurbinesSensor(KirkHillEntity, SensorEntity):

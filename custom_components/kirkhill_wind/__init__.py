@@ -188,33 +188,6 @@ def _build_dashboard_config() -> dict:
         }
     )
 
-    coord_entities: list[dict] = []
-    for i in range(1, 9):
-        coord_entities.extend(
-            [
-                {
-                    "type": "attribute",
-                    "entity": f"sensor.turbine_t{i}_state",
-                    "attribute": "latitude",
-                    "name": f"T{i} latitude",
-                },
-                {
-                    "type": "attribute",
-                    "entity": f"sensor.turbine_t{i}_state",
-                    "attribute": "longitude",
-                    "name": f"T{i} longitude",
-                },
-            ]
-        )
-    overview_cards.append(
-        {
-            "type": "entities",
-            "title": "Turbine coordinates",
-            "show_header_toggle": False,
-            "entities": coord_entities,
-        }
-    )
-
     turbine_cards = []
     for i in range(1, 9):
         turbine_cards.append(

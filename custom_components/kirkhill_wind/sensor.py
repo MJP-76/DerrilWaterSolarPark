@@ -102,15 +102,15 @@ class FarmCapacityFactorSensor(KirkHillScopedEntity, SensorEntity):
 class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.MEASUREMENT
-    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
 
     def __init__(self, coordinator, entry, scope: str, timeframe: str):
         super().__init__(coordinator, entry, scope, f"farm_generation_{timeframe}")
         self._timeframe = timeframe
-        self._attr_name = TIMEFRAME_LABELS.get(timeframe, f"Generation ({timeframe})")
+        scope_label = scope.capitalize()
+        label = TIMEFRAME_LABELS.get(timeframe, f"Generation ({timeframe})")
+        self._attr_name = f"{label} ({scope_label})"
 
-    @property
-    def native_value(self):
+    def _generation_kwh(self) -> float | None:
         summary = (
             self.coordinator.data.get("timeframe_summaries", {})
             .get(self._scope, {})
@@ -118,9 +118,27 @@ class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
         )
         value = summary.get("total_generation_kwh")
         if isinstance(value, (int, float)):
-            return value
+            return float(value)
         value = summary.get("total_kwh")
-        return value if isinstance(value, (int, float)) else None
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    @property
+    def native_unit_of_measurement(self):
+        value_kwh = self._generation_kwh()
+        if value_kwh is None:
+            return UnitOfEnergy.KILO_WATT_HOUR
+        return UnitOfEnergy.MEGA_WATT_HOUR if value_kwh >= 1000 else UnitOfEnergy.KILO_WATT_HOUR
+
+    @property
+    def native_value(self):
+        value_kwh = self._generation_kwh()
+        if value_kwh is None:
+            return None
+        if value_kwh >= 1000:
+            return value_kwh / 1000
+        return value_kwh
 
     @property
     def extra_state_attributes(self) -> dict:

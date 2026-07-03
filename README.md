@@ -44,6 +44,7 @@ Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose
 - Configurable polling interval via Options
 - Auto-generated Lovelace dashboard tab created during integration setup
 - Dashboard now follows the live entity IDs from your installed config entry
+- Dashboard generation cards display values dynamically as kWh or MWh and round to 2 decimal places
 - Dashboard YAML file is still included for manual import/customization
 
 ## Installation
@@ -87,6 +88,8 @@ Farm hub device:
 - Inactive turbines
 - Alarm (binary sensor)
 
+Timeframe generation entities keep a stable raw **kWh** state for reliability in Home Assistant. The generated dashboard formats those values for display as **kWh** or **MWh** automatically and rounds them to **2 decimal places**.
+
 Per turbine device (`Turbine T1` ... `Turbine T8`):
 - Power (owner) [kW]
 - Power (site) [kW]
@@ -106,6 +109,7 @@ The generated dashboard includes:
 - live farm wind and turbine availability
 - a turbine map section styled closer to the standalone example
 - full per-turbine owner/site power, capacity, wind, state, and active status
+- generation display cards that switch between **kWh** and **MWh** automatically and show **2 decimal places**
 
 The generated dashboard now uses the **live entity registry** for the current config entry, so it follows your real entity IDs instead of relying on hardcoded names.
 

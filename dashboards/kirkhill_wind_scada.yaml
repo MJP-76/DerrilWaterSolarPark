@@ -25,13 +25,16 @@ views:
             entities:
               - sensor.kirk_hill_wind_farm_power_owner
               - sensor.kirk_hill_wind_farm_capacity_factor_owner
-              - sensor.kirk_hill_wind_farm_generation_yesterday_owner
-              - sensor.kirk_hill_wind_farm_generation_today_owner
-              - sensor.kirk_hill_wind_farm_generation_week_owner
-              - sensor.kirk_hill_wind_farm_generation_month_owner
-              - sensor.kirk_hill_wind_farm_generation_ytd_owner
-              - sensor.kirk_hill_wind_farm_generation_year_owner
-              - sensor.kirk_hill_wind_farm_generation_alltime_owner
+          - type: markdown
+            title: Owner generation
+            content: |
+              - **Yesterday:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_yesterday_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Today:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_today_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Week:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_week_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Month:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_month_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **YTD:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_ytd_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Year:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_year_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **All time:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_alltime_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
           - type: history-graph
             title: Owner and wind (last 6 hours)
             hours_to_show: 6
@@ -70,13 +73,16 @@ views:
               - sensor.kirk_hill_wind_farm_active_turbines
               - sensor.kirk_hill_wind_farm_inactive_turbines
               - binary_sensor.kirk_hill_wind_farm_alarm
-              - sensor.kirk_hill_wind_farm_generation_yesterday_site
-              - sensor.kirk_hill_wind_farm_generation_today_site
-              - sensor.kirk_hill_wind_farm_generation_week_site
-              - sensor.kirk_hill_wind_farm_generation_month_site
-              - sensor.kirk_hill_wind_farm_generation_ytd_site
-              - sensor.kirk_hill_wind_farm_generation_year_site
-              - sensor.kirk_hill_wind_farm_generation_alltime_site
+          - type: markdown
+            title: Site generation
+            content: |
+              - **Yesterday:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_yesterday_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Today:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_today_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Week:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_week_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Month:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_month_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **YTD:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_ytd_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **Year:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_year_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+              - **All time:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_alltime_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
           - type: history-graph
             title: Site and wind (last 6 hours)
             hours_to_show: 6

@@ -116,6 +116,8 @@ class FarmCapacityFactorSensor(KirkHillScopedEntity, SensorEntity):
 class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_suggested_display_precision = 2
 
     def __init__(self, coordinator, entry, scope: str, timeframe: str):
         super().__init__(coordinator, entry, scope, f"farm_generation_{timeframe}")
@@ -136,25 +138,24 @@ class FarmGenerationByTimeframeSensor(KirkHillScopedEntity, SensorEntity):
         return _as_float(summary.get("total_kwh"))
 
     @property
-    def native_unit_of_measurement(self):
-        value_kwh = self._generation_kwh()
-        if value_kwh is None:
-            return UnitOfEnergy.KILO_WATT_HOUR
-        return UnitOfEnergy.MEGA_WATT_HOUR if value_kwh >= 1000 else UnitOfEnergy.KILO_WATT_HOUR
-
-    @property
     def native_value(self):
-        value_kwh = self._generation_kwh()
-        if value_kwh is None:
-            return None
-        if value_kwh >= 1000:
-            return value_kwh / 1000
-        return value_kwh
+        return self._generation_kwh()
 
     @property
     def extra_state_attributes(self) -> dict:
         attrs = super().extra_state_attributes
+        value_kwh = self._generation_kwh()
         attrs["timeframe"] = self._timeframe
+        attrs["raw_generation_kwh"] = value_kwh
+        if value_kwh is None:
+            attrs["display_unit"] = UnitOfEnergy.KILO_WATT_HOUR
+            attrs["display_value"] = None
+        elif value_kwh >= 1000:
+            attrs["display_unit"] = UnitOfEnergy.MEGA_WATT_HOUR
+            attrs["display_value"] = round(value_kwh / 1000, 2)
+        else:
+            attrs["display_unit"] = UnitOfEnergy.KILO_WATT_HOUR
+            attrs["display_value"] = round(value_kwh, 2)
         return attrs
 
 

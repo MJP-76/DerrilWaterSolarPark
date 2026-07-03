@@ -144,6 +144,29 @@ def _entity_ids_for_entry(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, 
     return entity_ids
 
 
+def _generation_markdown_line(label: str, entity_id: str) -> str:
+    """Return a markdown line that formats generation as kWh or MWh."""
+    return (
+        f"- **{label}:** "
+        f"{{% set v = state_attr('{entity_id}', 'raw_generation_kwh') %}}"
+        "{% if v is not none %}"
+        "{% set n = v | float(0) %}"
+        "{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh"
+        "{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}"
+        "{% else %}—{% endif %}"
+    )
+
+
+def _generation_markdown_card(title: str, entries: list[tuple[str, str]]) -> dict:
+    """Return a markdown card for formatted generation display."""
+    content = "\n".join(_generation_markdown_line(label, entity_id) for label, entity_id in entries)
+    return {
+        "type": "markdown",
+        "title": title,
+        "content": content,
+    }
+
+
 def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
     """Generate the default storage dashboard config."""
     entity_ids = _entity_ids_for_entry(hass, entry)
@@ -158,22 +181,22 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
         return entity_ids[f"{entry.entry_id}_turbine_{turbine_id}_{unique_suffix}"]
 
     owner_generation_entities = [
-        farm_scoped("owner", "farm_generation_yesterday"),
-        farm_scoped("owner", "farm_generation_today"),
-        farm_scoped("owner", "farm_generation_week"),
-        farm_scoped("owner", "farm_generation_month"),
-        farm_scoped("owner", "farm_generation_ytd"),
-        farm_scoped("owner", "farm_generation_year"),
-        farm_scoped("owner", "farm_generation_alltime"),
+        ("Yesterday", farm_scoped("owner", "farm_generation_yesterday")),
+        ("Today", farm_scoped("owner", "farm_generation_today")),
+        ("Week", farm_scoped("owner", "farm_generation_week")),
+        ("Month", farm_scoped("owner", "farm_generation_month")),
+        ("YTD", farm_scoped("owner", "farm_generation_ytd")),
+        ("Year", farm_scoped("owner", "farm_generation_year")),
+        ("All time", farm_scoped("owner", "farm_generation_alltime")),
     ]
     site_generation_entities = [
-        farm_scoped("site", "farm_generation_yesterday"),
-        farm_scoped("site", "farm_generation_today"),
-        farm_scoped("site", "farm_generation_week"),
-        farm_scoped("site", "farm_generation_month"),
-        farm_scoped("site", "farm_generation_ytd"),
-        farm_scoped("site", "farm_generation_year"),
-        farm_scoped("site", "farm_generation_alltime"),
+        ("Yesterday", farm_scoped("site", "farm_generation_yesterday")),
+        ("Today", farm_scoped("site", "farm_generation_today")),
+        ("Week", farm_scoped("site", "farm_generation_week")),
+        ("Month", farm_scoped("site", "farm_generation_month")),
+        ("YTD", farm_scoped("site", "farm_generation_ytd")),
+        ("Year", farm_scoped("site", "farm_generation_year")),
+        ("All time", farm_scoped("site", "farm_generation_alltime")),
     ]
 
     turbine_cards = []
@@ -232,9 +255,12 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                 "entities": [
                                     farm_scoped("owner", "farm_power"),
                                     farm_scoped("owner", "farm_capacity_factor"),
-                                    *owner_generation_entities,
                                 ],
                             },
+                            _generation_markdown_card(
+                                "Owner generation",
+                                owner_generation_entities,
+                            ),
                             {
                                 "type": "history-graph",
                                 "title": "Owner and wind (last 6 hours)",
@@ -279,9 +305,12 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                     farm("farm_active_turbines"),
                                     farm("farm_inactive_turbines"),
                                     farm("farm_alarm"),
-                                    *site_generation_entities,
                                 ],
                             },
+                            _generation_markdown_card(
+                                "Site generation",
+                                site_generation_entities,
+                            ),
                             {
                                 "type": "history-graph",
                                 "title": "Site and wind (last 6 hours)",

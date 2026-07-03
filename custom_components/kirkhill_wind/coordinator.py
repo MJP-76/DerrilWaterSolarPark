@@ -105,10 +105,24 @@ class KirkHillWindCoordinator(DataUpdateCoordinator):
                 )
                 tasks.append((scope, timeframe, task))
 
-        results = await asyncio.gather(*(task for _, _, task in tasks))
+        results = await asyncio.gather(
+            *(task for _, _, task in tasks),
+            return_exceptions=True,
+        )
 
         summaries: dict[str, dict[str, dict]] = {scope: {} for scope in SCOPES}
         for (scope, timeframe, _), payload in zip(tasks, results):
-            summaries[scope][timeframe] = payload.get("summary", {})
+            if isinstance(payload, Exception):
+                _LOGGER.warning(
+                    "Failed to fetch summary for scope=%s timeframe=%s: %s",
+                    scope,
+                    timeframe,
+                    payload,
+                )
+                summaries[scope][timeframe] = {}
+                continue
+
+            summary = payload.get("summary")
+            summaries[scope][timeframe] = summary if isinstance(summary, dict) else {}
 
         return summaries

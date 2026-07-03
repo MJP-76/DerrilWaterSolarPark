@@ -22,7 +22,7 @@ class KirkHillApiClient:
     @property
     def _headers(self) -> dict[str, str]:
         return {
-            "Authorization": f"Bearer {self._api_key}",
+            "Authorization": "Bearer " + self._api_key,
             "Accept": "application/json",
         }
 

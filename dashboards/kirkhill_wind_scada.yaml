@@ -1,0 +1,159 @@
+title: Kirk Hill Wind Farm SCADA
+views:
+  - title: Overview
+    path: overview
+    icon: mdi:wind-turbine
+    badges: []
+    cards:
+      - type: heading
+        heading: Kirk Hill Wind Farm
+        heading_style: title
+        icon: mdi:wind-turbine
+
+      - type: glance
+        title: Farm summary
+        columns: 3
+        entities:
+          - entity: sensor.kirk_hill_wind_farm_power_output
+            name: Power
+          - entity: sensor.kirk_hill_wind_farm_wind_speed
+            name: Wind
+          - entity: sensor.kirk_hill_wind_farm_capacity_factor
+            name: Capacity
+          - entity: sensor.kirk_hill_wind_farm_farm_state
+            name: State
+          - entity: sensor.kirk_hill_wind_farm_active_faults
+            name: Faults
+          - entity: binary_sensor.kirk_hill_wind_farm_alarm
+            name: Alarm
+
+      - type: history-graph
+        title: Farm power & wind (last hours)
+        hours_to_show: 6
+        entities:
+          - entity: sensor.kirk_hill_wind_farm_power_output
+          - entity: sensor.kirk_hill_wind_farm_wind_speed
+
+      - type: grid
+        title: Turbines
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: sensor.turbine_t1_power_output
+            name: T1
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t2_power_output
+            name: T2
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t3_power_output
+            name: T3
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t4_power_output
+            name: T4
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t5_power_output
+            name: T5
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t6_power_output
+            name: T6
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t7_power_output
+            name: T7
+            icon: mdi:wind-turbine
+          - type: tile
+            entity: sensor.turbine_t8_power_output
+            name: T8
+            icon: mdi:wind-turbine
+
+      - type: entities
+        title: Turbine faults
+        show_header_toggle: false
+        entities:
+          - binary_sensor.turbine_t1_fault
+          - binary_sensor.turbine_t2_fault
+          - binary_sensor.turbine_t3_fault
+          - binary_sensor.turbine_t4_fault
+          - binary_sensor.turbine_t5_fault
+          - binary_sensor.turbine_t6_fault
+          - binary_sensor.turbine_t7_fault
+          - binary_sensor.turbine_t8_fault
+
+  - title: Turbine detail
+    path: turbines
+    icon: mdi:wind-turbine
+    cards:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: Turbine T1
+            entities:
+              - sensor.turbine_t1_power_output
+              - sensor.turbine_t1_wind_speed
+              - sensor.turbine_t1_health
+              - sensor.turbine_t1_state
+              - binary_sensor.turbine_t1_fault
+          - type: entities
+            title: Turbine T2
+            entities:
+              - sensor.turbine_t2_power_output
+              - sensor.turbine_t2_wind_speed
+              - sensor.turbine_t2_health
+              - sensor.turbine_t2_state
+              - binary_sensor.turbine_t2_fault
+          - type: entities
+            title: Turbine T3
+            entities:
+              - sensor.turbine_t3_power_output
+              - sensor.turbine_t3_wind_speed
+              - sensor.turbine_t3_health
+              - sensor.turbine_t3_state
+              - binary_sensor.turbine_t3_fault
+          - type: entities
+            title: Turbine T4
+            entities:
+              - sensor.turbine_t4_power_output
+              - sensor.turbine_t4_wind_speed
+              - sensor.turbine_t4_health
+              - sensor.turbine_t4_state
+              - binary_sensor.turbine_t4_fault
+          - type: entities
+            title: Turbine T5
+            entities:
+              - sensor.turbine_t5_power_output
+              - sensor.turbine_t5_wind_speed
+              - sensor.turbine_t5_health
+              - sensor.turbine_t5_state
+              - binary_sensor.turbine_t5_fault
+          - type: entities
+            title: Turbine T6
+            entities:
+              - sensor.turbine_t6_power_output
+              - sensor.turbine_t6_wind_speed
+              - sensor.turbine_t6_health
+              - sensor.turbine_t6_state
+              - binary_sensor.turbine_t6_fault
+          - type: entities
+            title: Turbine T7
+            entities:
+              - sensor.turbine_t7_power_output
+              - sensor.turbine_t7_wind_speed
+              - sensor.turbine_t7_health
+              - sensor.turbine_t7_state
+              - binary_sensor.turbine_t7_fault
+          - type: entities
+            title: Turbine T8
+            entities:
+              - sensor.turbine_t8_power_output
+              - sensor.turbine_t8_wind_speed
+              - sensor.turbine_t8_health
+              - sensor.turbine_t8_state
+              - binary_sensor.turbine_t8_fault

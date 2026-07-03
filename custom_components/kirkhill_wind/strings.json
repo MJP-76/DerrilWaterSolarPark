@@ -2,10 +2,12 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to Kirk Hill Wind Farm",
-        "description": "Please enter your dashboard API Key to authenticate.",
+        "title": "Set up Kirk Hill Wind Farm SCADA Simulator",
+        "description": "Configure the simulated wind farm site.",
         "data": {
-          "api_key": "API Key"
+          "site_name": "Site name",
+          "turbine_count": "Number of turbines",
+          "scan_interval": "Simulation tick interval (seconds)"
         }
       }
     },
@@ -17,6 +19,50 @@
     },
     "abort": {
       "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kirk Hill Wind Farm options",
+        "description": "Adjust the SCADA simulator settings.",
+        "data": {
+          "turbine_count": "Number of turbines",
+          "scan_interval": "Simulation tick interval (seconds)"
+        }
+      }
+    }
+  },
+  "services": {
+    "inject_fault": {
+      "name": "Inject fault",
+      "description": "Force a specific turbine into a fault state.",
+      "fields": {
+        "turbine_id": {
+          "name": "Turbine ID",
+          "description": "The turbine to fault."
+        }
+      }
+    },
+    "reset_turbine": {
+      "name": "Reset turbine",
+      "description": "Reset a turbine back to normal, healthy operation.",
+      "fields": {
+        "turbine_id": {
+          "name": "Turbine ID",
+          "description": "The turbine to reset."
+        }
+      }
+    },
+    "set_wind_speed": {
+      "name": "Set wind speed",
+      "description": "Override the simulated global wind speed.",
+      "fields": {
+        "wind_speed": {
+          "name": "Wind speed",
+          "description": "Wind speed in m/s (0-25)."
+        }
+      }
     }
   }
 }

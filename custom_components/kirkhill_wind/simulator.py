@@ -87,3 +87,13 @@ class TurbineSim:
             "power_mw": round(self.power, 2),
             "wind_speed": round(self.wind, 2),
         }
+
+    def force_fault(self):
+        """Force this turbine into a fault state (used by the inject_fault service)."""
+        self.state = "fault"
+        self.last_fault = time.time()
+
+    def reset(self):
+        """Reset this turbine back to healthy, normal operation (reset_turbine service)."""
+        self.state = "normal"
+        self.health = 100.0

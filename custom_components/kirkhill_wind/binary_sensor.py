@@ -1,4 +1,4 @@
-"""Binary sensor platform for the Kirk Hill Wind Farm SCADA Simulator."""
+"""Binary sensor platform for the Kirk Hill Wind Farm integration."""
 from __future__ import annotations
 
 from homeassistant.components.binary_sensor import (
@@ -6,24 +6,26 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
 )
 
+from .const import SCOPE_OWNER
 from .entity import KirkHillEntity, KirkHillTurbineEntity
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = entry.runtime_data
 
-    entities = [FarmAlarmSensor(coordinator, entry)]
+    turbine_ids = [
+        t["id"] for t in coordinator.data[SCOPE_OWNER].get("turbines", [])
+    ]
 
-    for index in range(len(coordinator.turbines)):
-        entities.append(TurbineFaultSensor(coordinator, entry, index))
+    entities: list = [FarmAlarmSensor(coordinator, entry)]
+    entities += [TurbineActiveSensor(coordinator, entry, tid) for tid in turbine_ids]
 
     async_add_entities(entities)
 
 
 class FarmAlarmSensor(KirkHillEntity, BinarySensorEntity):
-    """On when the farm is in a degraded or critical state."""
+    """On when one or more turbines are inactive."""
 
-    _attr_translation_key = "farm_alarm"
     _attr_name = "Alarm"
     _attr_device_class = BinarySensorDeviceClass.SAFETY
 
@@ -32,19 +34,22 @@ class FarmAlarmSensor(KirkHillEntity, BinarySensorEntity):
 
     @property
     def is_on(self) -> bool:
-        return self.coordinator.data["farm"]["state"] in ("degraded", "critical")
+        return (
+            self.coordinator.data[SCOPE_OWNER]["summary"].get("inactive_turbines", 0)
+            > 0
+        )
 
 
-class TurbineFaultSensor(KirkHillTurbineEntity, BinarySensorEntity):
-    """On when a specific turbine is in a fault state."""
+class TurbineActiveSensor(KirkHillTurbineEntity, BinarySensorEntity):
+    """On when the turbine status is 'active'."""
 
-    _attr_translation_key = "turbine_fault"
-    _attr_name = "Fault"
-    _attr_device_class = BinarySensorDeviceClass.PROBLEM
+    _attr_name = "Active"
+    _attr_device_class = BinarySensorDeviceClass.RUNNING
 
-    def __init__(self, coordinator, entry, index):
-        super().__init__(coordinator, entry, index, "fault")
+    def __init__(self, coordinator, entry, turbine_id: str):
+        super().__init__(coordinator, entry, turbine_id, "active")
 
     @property
     def is_on(self) -> bool:
-        return self.turbine_data["state"] == "fault"
+        t = self._turbine_data(SCOPE_OWNER)
+        return t.get("status") == "active" if t else False

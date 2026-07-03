@@ -3,18 +3,19 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up Kirk Hill Wind Farm SCADA Simulator",
-        "description": "Configure the simulated wind farm site.",
+        "title": "Connect to Kirk Hill Wind Farm",
+        "description": "Enter your Kirk Hill dashboard API key.",
         "data": {
+          "api_key": "API key",
           "site_name": "Site name",
-          "turbine_count": "Number of turbines",
-          "scan_interval": "Simulation tick interval (seconds)"
+          "base_url": "API base URL (advanced)"
         }
       }
     },
     "error": {
       "auth_failed": "Invalid API key",
-      "cannot_connect": "Cannot connect to API"
+      "cannot_connect": "Cannot connect to the API",
+      "unknown": "Unexpected error"
     },
     "abort": {
       "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
@@ -24,10 +25,8 @@
     "step": {
       "init": {
         "title": "Kirk Hill Wind Farm options",
-        "description": "Adjust the SCADA simulator settings.",
         "data": {
-          "turbine_count": "Number of turbines",
-          "scan_interval": "Simulation tick interval (seconds)"
+          "scan_interval": "Poll interval (seconds)"
         }
       }
     }

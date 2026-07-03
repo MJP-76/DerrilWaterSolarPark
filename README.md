@@ -35,6 +35,8 @@ You will need:
 - Wind speed (m/s)
 - Capacity factor (%)
 - Total energy (kWh)
+- Generation by timeframe for both owner and site:
+  yesterday, today, week, month, ytd, year, alltime
 - Turbine energy sensors (T1–T8)
 
 ## Energy Dashboard Support

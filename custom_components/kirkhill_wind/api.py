@@ -1,4 +1,3 @@
-import aiohttp
 import logging
 
 _LOGGER = logging.getLogger(__name__)
@@ -17,9 +16,9 @@ class KirkHillWindApi:
         url = f"{self._base_url}{path}"
 
         headers = {
-            "Authorization": f"Bearer {self._api_key}",
             "Accept": "application/json",
         }
+        headers["Authorization"] = "Bearer " + self._api_key
 
         try:
             _LOGGER.debug(f"API request to {url} with params {params}")
@@ -30,17 +29,22 @@ class KirkHillWindApi:
                     _LOGGER.error(f"API error {resp.status}: {error_text}")
                     raise KirkHillWindApiError(error_text)
                 response = await resp.json()
-                _LOGGER.debug(f"Raw API response received")
+                _LOGGER.debug("Raw API response received")
                 # Extract the data field from the response
                 extracted = response.get("data", response)
-                _LOGGER.debug(f"Extracted data from response")
+                _LOGGER.debug("Extracted data from response")
                 return extracted
         except Exception as err:
             _LOGGER.error(f"API request failed: {err}", exc_info=True)
             raise
 
-    async def summary(self, session, scope):
-        return await self.request(session, "/api/v1/summary", {"scope": scope})
+    async def summary(self, session, scope, range_name=None, year=None):
+        params = {"scope": scope}
+        if range_name:
+            params["range"] = range_name
+        if year is not None:
+            params["year"] = str(year)
+        return await self.request(session, "/api/v1/summary", params)
 
     async def generation(self, session, scope):
         return await self.request(session, "/api/v1/generation", {"scope": scope})

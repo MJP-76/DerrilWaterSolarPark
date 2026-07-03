@@ -1,8 +1,8 @@
 from homeassistant.components.sensor import SensorEntity, SensorStateClass, SensorDeviceClass
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .const import DOMAIN, TIME_RANGE_LABELS, TIME_RANGES
 from .device import get_device_info
-from .const import DOMAIN
 
 
 SCOPE_LABEL = {
@@ -35,6 +35,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
             KirkHillGeneration(coordinator, entry, scope),
             KirkHillWindSpeed(coordinator, entry, scope),
         ])
+        entities.extend(
+            KirkHillGenerationByRange(coordinator, entry, scope, range_name)
+            for range_name in TIME_RANGES
+        )
 
         # Turbines (safe check) - API returns turbines as a list
         turbines_data = scope_data.get("turbines", {})
@@ -78,6 +82,23 @@ class KirkHillBaseSensor(CoordinatorEntity, SensorEntity):
     def scope_label(self):
         return SCOPE_LABEL.get(self.scope, self.scope)
 
+    @staticmethod
+    def _extract_summary(summary_data):
+        if not isinstance(summary_data, dict):
+            return {}
+        summary = summary_data.get("summary")
+        if isinstance(summary, dict):
+            return summary
+        return summary_data
+
+    def _summary_metric(self, summary_data, *keys):
+        summary = self._extract_summary(summary_data)
+        for key in keys:
+            value = summary.get(key)
+            if value is not None and isinstance(value, (int, float)):
+                return value
+        return None
+
 
 # =========================
 # CORE SENSORS
@@ -100,12 +121,7 @@ class KirkHillCapacityFactor(KirkHillBaseSensor):
     def native_value(self):
         # Capacity factor is in summary.data.summary.capacity_factor_percent
         summary_data = self.scope_data.get("summary", {})
-        summary = summary_data.get("summary", {})
-        cf = summary.get("capacity_factor_percent")
-        
-        if cf is not None and isinstance(cf, (int, float)):
-            return cf
-        return None
+        return self._summary_metric(summary_data, "capacity_factor_percent")
 
 
 class KirkHillGeneration(KirkHillBaseSensor):
@@ -128,7 +144,7 @@ class KirkHillGeneration(KirkHillBaseSensor):
         generation_data = self.scope_data.get("generation", {})
         summary = generation_data.get("summary", {})
         generation = summary.get("total_generation_kwh")
-        
+
         if generation is not None and isinstance(generation, (int, float)):
             return generation
         return None
@@ -152,7 +168,7 @@ class KirkHillWindSpeed(KirkHillBaseSensor):
         # Wind speed is in wind.data.series[], get the latest
         wind_data = self.scope_data.get("wind", {})
         series = wind_data.get("series", [])
-        
+
         if isinstance(series, list) and len(series) > 0:
             # Get the last entry (most recent)
             latest = series[-1]
@@ -160,8 +176,42 @@ class KirkHillWindSpeed(KirkHillBaseSensor):
                 speed = latest.get("wind_speed_mps")
                 if speed is not None and isinstance(speed, (int, float)):
                     return speed
-        
+
         return None
+
+
+class KirkHillGenerationByRange(KirkHillBaseSensor):
+    """Generation sensor for a specific dashboard range."""
+
+    _attr_native_unit_of_measurement = "kWh"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_device_class = SensorDeviceClass.ENERGY
+
+    def __init__(self, coordinator, entry, scope, range_name):
+        super().__init__(coordinator, entry, scope)
+        self.range_name = range_name
+
+    @property
+    def name(self):
+        range_label = TIME_RANGE_LABELS.get(self.range_name, self.range_name)
+        return f"Kirk Hill {self.scope_label} Generation {range_label}"
+
+    @property
+    def unique_id(self):
+        return (
+            f"{DOMAIN}_{self.entry.entry_id}_{self.scope}_"
+            f"generation_{self.range_name}"
+        )
+
+    @property
+    def extra_state_attributes(self):
+        return {"timeframe": self.range_name}
+
+    @property
+    def native_value(self):
+        summaries_by_range = self.scope_data.get("summaries_by_range", {})
+        summary_data = summaries_by_range.get(self.range_name, {})
+        return self._summary_metric(summary_data, "total_kwh", "total_generation_kwh")
 
 
 # =========================
@@ -194,15 +244,15 @@ class KirkHillTurbineGeneration(KirkHillBaseSensor):
         # Turbines are in turbines.data.turbines[] as a list
         turbines_data = self.scope_data.get("turbines", {})
         turbines = turbines_data.get("turbines", [])
-        
+
         if not isinstance(turbines, list):
             return None
-        
+
         # Find the turbine with matching ID
         for turbine in turbines:
             if isinstance(turbine, dict) and turbine.get("id") == self.turbine_id:
                 generation = turbine.get("generation_kwh")
                 if generation is not None and isinstance(generation, (int, float)):
                     return generation
-        
+
         return None

@@ -43,8 +43,6 @@ The integration is built using GITHubCopilot and if you like my work the please 
 - Dashboard YAML file is still included for manual import/customization
 
 ## Installation
-<br>[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
-
 1. Add this repository to HACS (Custom Repositories)
 2. Install "Kirk Hill Wind Farm"
 3. Restart Home Assistant

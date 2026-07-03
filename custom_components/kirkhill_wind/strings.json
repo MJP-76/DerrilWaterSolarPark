@@ -7,8 +7,7 @@
         "data": {
           "api_key": "API key",
           "create_dashboard": "Create dashboard automatically",
-          "site_name": "Site name",
-          "base_url": "API base URL (advanced)"
+          "site_name": "Site name"
         }
       }
     },

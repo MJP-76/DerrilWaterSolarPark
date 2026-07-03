@@ -39,10 +39,11 @@ Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose
   - state text
   - active binary sensor
 - Config flow with API key validation
-- Optional custom base URL (advanced)
+- Masked API key entry in the setup form
+- Optional automatic dashboard creation during setup
 - Configurable polling interval via Options
 - Auto-generated Lovelace dashboard tab created during integration setup
-- Dashboard includes turbine map and coordinate list (lat/lon from API)
+- Dashboard now follows the live entity IDs from your installed config entry
 - Dashboard YAML file is still included for manual import/customization
 
 ## Installation
@@ -50,9 +51,22 @@ Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose
 2. Install "Kirk Hill Wind Farm"
 3. Restart Home Assistant
 4. Add the integration via Settings -> Devices & Services -> Add Integration -> "Kirk Hill Wind Farm"
-5. Enter your API key, site name, and (optionally) a custom base URL
+5. Enter your API key, choose whether to create the dashboard automatically, and set a site name
 
 Polling interval can be changed later from the integration's **Configure** (Options) menu.
+
+## Configuration
+
+During setup, the integration asks for:
+
+- **API key** — entered as a masked password field in Home Assistant
+- **Create dashboard automatically** — choose whether the integration should create/update its Lovelace dashboard tab
+- **Site name** — used as the integration title in Home Assistant
+
+After setup, the **Configure** options let you change:
+
+- **Polling interval**
+- **Create dashboard automatically**
 
 ## Sensors
 
@@ -92,6 +106,8 @@ The generated dashboard includes:
 - live farm wind and turbine availability
 - a turbine map section styled closer to the standalone example
 - full per-turbine owner/site power, capacity, wind, state, and active status
+
+The generated dashboard now uses the **live entity registry** for the current config entry, so it follows your real entity IDs instead of relying on hardcoded names.
 
 For manual import or customization, a dashboard YAML is also provided at [`dashboards/kirkhill_wind_scada.yaml`](dashboards/kirkhill_wind_scada.yaml).
 

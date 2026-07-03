@@ -41,7 +41,7 @@ class KirkHillWindConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the initial step: API key, site name, and optional base URL."""
+        """Handle the initial step: API key, site name, and dashboard choice."""
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
 
@@ -50,14 +50,14 @@ class KirkHillWindConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             errors = await self._validate_api_key(
                 user_input[CONF_API_KEY],
-                user_input.get(CONF_BASE_URL, DEFAULT_BASE_URL),
+                DEFAULT_BASE_URL,
             )
             if not errors:
                 return self.async_create_entry(
                     title=user_input.get(CONF_SITE_NAME, DEFAULT_SITE_NAME),
                     data={
                         CONF_API_KEY: user_input[CONF_API_KEY],
-                        CONF_BASE_URL: user_input.get(CONF_BASE_URL, DEFAULT_BASE_URL),
+                        CONF_BASE_URL: DEFAULT_BASE_URL,
                         CONF_CREATE_DASHBOARD: user_input.get(
                             CONF_CREATE_DASHBOARD, DEFAULT_CREATE_DASHBOARD
                         ),
@@ -79,7 +79,6 @@ class KirkHillWindConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(
                         CONF_CREATE_DASHBOARD, default=DEFAULT_CREATE_DASHBOARD
                     ): bool,
-                    vol.Optional(CONF_BASE_URL, default=DEFAULT_BASE_URL): str,
                 }
             ),
             errors=errors,

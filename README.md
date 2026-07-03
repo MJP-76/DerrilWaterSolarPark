@@ -1,6 +1,9 @@
 # Kirk Hill Wind Farm Integration
+[![hacs][hacs-badge]][hacs] 
+A Home Assistant custom component that reads live data from the Kirk Hill Wind Farm API
 
-A Home Assistant custom component that reads live data from the Kirk Hill Wind Farm API.
+>I am not affiliated with Kirk Hill Co-op other than being a member
+>This is a community integration that reads the dashboard's public endpoints with your personal API key
 
 <p align="center">
   <a href="https://www.home-assistant.io/" target="_blank" rel="noopener noreferrer">
@@ -18,7 +21,7 @@ It pulls current data for both OpenAPI scopes:
 - `owner` (your ownership share)
 - `site` (whole-site values)
 
-If you like my work:
+The integration is built using GITHubCopilot and if you like my work the please support me
 <br><a href="https://www.buymeacoffee.com/mjp76" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 <br>Use my [Octopus.Energy 🐙](https://share.octopus.energy/iron-moose-196) referral code. You get £50 credit for joining and I get £50 credit.
 
@@ -101,3 +104,10 @@ For manual import or customization, a dashboard YAML is also provided at [`dashb
 ## License
 
 MIT
+
+[kirkhill]: https://dashboard.kirkhillcoop.org
+[brands]: https://github.com/home-assistant/brands
+[hacs]: https://github.com/hacs/integration
+[hacs-badge]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
+[ci]: https://github.com/njp970/ha_kirkhill/actions/workflows/ci.yml
+[ci-badge]: https://github.com/njp970/ha_kirkhill/actions/workflows/ci.yml/badge.svg

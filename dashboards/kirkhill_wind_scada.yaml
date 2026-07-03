@@ -3,89 +3,117 @@ views:
   - title: Overview
     path: overview
     icon: mdi:wind-turbine
-    badges: []
-    cards:
-      - type: heading
-        heading: Kirk Hill Wind Farm API Overview
-        heading_style: title
-        icon: mdi:wind-turbine
-
-      - type: entities
-        title: Farm scope comparison
-        show_header_toggle: false
-        entities:
-          - entity: sensor.kirk_hill_wind_farm_power_owner
-            name: Power (owner)
-          - entity: sensor.kirk_hill_wind_farm_power_site
-            name: Power (site)
-          - entity: sensor.kirk_hill_wind_farm_capacity_factor_owner
-            name: Capacity factor (owner)
-          - entity: sensor.kirk_hill_wind_farm_capacity_factor_site
-            name: Capacity factor (site)
-
-      - type: entities
-        title: Farm physical readings
-        show_header_toggle: false
-        entities:
-          - entity: sensor.kirk_hill_wind_farm_wind_speed
-            name: Wind speed
-          - entity: sensor.kirk_hill_wind_farm_active_turbines
-            name: Active turbines
-          - entity: sensor.kirk_hill_wind_farm_inactive_turbines
-            name: Inactive turbines
-          - entity: binary_sensor.kirk_hill_wind_farm_alarm
-            name: Alarm
-
-      - type: history-graph
-        title: Farm power and wind (last 6 hours)
-        hours_to_show: 6
-        entities:
-          - entity: sensor.kirk_hill_wind_farm_power_owner
-          - entity: sensor.kirk_hill_wind_farm_power_site
-          - entity: sensor.kirk_hill_wind_farm_wind_speed
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Kirk Hill Wind Farm
+            heading_style: title
+            icon: mdi:wind-turbine
 
       - type: grid
-        title: Turbine status
-        columns: 4
-        square: false
         cards:
-          - type: tile
-            entity: binary_sensor.turbine_t1_active
-            name: T1 active
-          - type: tile
-            entity: binary_sensor.turbine_t2_active
-            name: T2 active
-          - type: tile
-            entity: binary_sensor.turbine_t3_active
-            name: T3 active
-          - type: tile
-            entity: binary_sensor.turbine_t4_active
-            name: T4 active
-          - type: tile
-            entity: binary_sensor.turbine_t5_active
-            name: T5 active
-          - type: tile
-            entity: binary_sensor.turbine_t6_active
-            name: T6 active
-          - type: tile
-            entity: binary_sensor.turbine_t7_active
-            name: T7 active
-          - type: tile
-            entity: binary_sensor.turbine_t8_active
-            name: T8 active
+          - type: heading
+            heading: Your share
+            heading_style: title
+          - type: entities
+            title: Owner metrics
+            show_header_toggle: false
+            entities:
+              - sensor.kirk_hill_wind_farm_power_owner
+              - sensor.kirk_hill_wind_farm_capacity_factor_owner
+              - sensor.kirk_hill_wind_farm_generation_yesterday_owner
+              - sensor.kirk_hill_wind_farm_generation_today_owner
+              - sensor.kirk_hill_wind_farm_generation_week_owner
+              - sensor.kirk_hill_wind_farm_generation_month_owner
+              - sensor.kirk_hill_wind_farm_generation_ytd_owner
+              - sensor.kirk_hill_wind_farm_generation_year_owner
+              - sensor.kirk_hill_wind_farm_generation_alltime_owner
+          - type: history-graph
+            title: Owner and wind (last 6 hours)
+            hours_to_show: 6
+            entities:
+              - sensor.kirk_hill_wind_farm_power_owner
+              - sensor.kirk_hill_wind_farm_wind_speed
+          - type: heading
+            heading: Turbine map
+            heading_style: title
+          - type: map
+            title: ""
+            default_zoom: 15
+            theme_mode: auto
+            entities:
+              - sensor.turbine_t1_state
+              - sensor.turbine_t2_state
+              - sensor.turbine_t3_state
+              - sensor.turbine_t4_state
+              - sensor.turbine_t5_state
+              - sensor.turbine_t6_state
+              - sensor.turbine_t7_state
+              - sensor.turbine_t8_state
 
-      - type: map
-        title: Turbine map
-        default_zoom: 15
-        entities:
-          - entity: sensor.turbine_t1_state
-          - entity: sensor.turbine_t2_state
-          - entity: sensor.turbine_t3_state
-          - entity: sensor.turbine_t4_state
-          - entity: sensor.turbine_t5_state
-          - entity: sensor.turbine_t6_state
-          - entity: sensor.turbine_t7_state
-          - entity: sensor.turbine_t8_state
+      - type: grid
+        cards:
+          - type: heading
+            heading: Whole site
+            heading_style: title
+          - type: entities
+            title: Site metrics
+            show_header_toggle: false
+            entities:
+              - sensor.kirk_hill_wind_farm_power_site
+              - sensor.kirk_hill_wind_farm_capacity_factor_site
+              - sensor.kirk_hill_wind_farm_wind_speed
+              - sensor.kirk_hill_wind_farm_active_turbines
+              - sensor.kirk_hill_wind_farm_inactive_turbines
+              - binary_sensor.kirk_hill_wind_farm_alarm
+              - sensor.kirk_hill_wind_farm_generation_yesterday_site
+              - sensor.kirk_hill_wind_farm_generation_today_site
+              - sensor.kirk_hill_wind_farm_generation_week_site
+              - sensor.kirk_hill_wind_farm_generation_month_site
+              - sensor.kirk_hill_wind_farm_generation_ytd_site
+              - sensor.kirk_hill_wind_farm_generation_year_site
+              - sensor.kirk_hill_wind_farm_generation_alltime_site
+          - type: history-graph
+            title: Site and wind (last 6 hours)
+            hours_to_show: 6
+            entities:
+              - sensor.kirk_hill_wind_farm_power_site
+              - sensor.kirk_hill_wind_farm_wind_speed
+          - type: heading
+            heading: Turbine status
+            heading_style: title
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: tile
+                entity: binary_sensor.turbine_t1_active
+                name: T1
+              - type: tile
+                entity: binary_sensor.turbine_t2_active
+                name: T2
+              - type: tile
+                entity: binary_sensor.turbine_t3_active
+                name: T3
+              - type: tile
+                entity: binary_sensor.turbine_t4_active
+                name: T4
+              - type: tile
+                entity: binary_sensor.turbine_t5_active
+                name: T5
+              - type: tile
+                entity: binary_sensor.turbine_t6_active
+                name: T6
+              - type: tile
+                entity: binary_sensor.turbine_t7_active
+                name: T7
+              - type: tile
+                entity: binary_sensor.turbine_t8_active
+                name: T8
 
   - title: Turbines
     path: turbines

@@ -120,73 +120,24 @@ async def _async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> No
 
 def _build_dashboard_config() -> dict:
     """Generate the default storage dashboard config."""
-    overview_cards: list[dict] = [
-        {
-            "type": "heading",
-            "heading": "Kirk Hill Wind Farm API Overview",
-            "heading_style": "title",
-            "icon": "mdi:wind-turbine",
-        },
-        {
-            "type": "entities",
-            "title": "Farm scope comparison",
-            "show_header_toggle": False,
-            "entities": [
-                {"entity": "sensor.kirk_hill_wind_farm_power_owner", "name": "Power (owner)"},
-                {"entity": "sensor.kirk_hill_wind_farm_power_site", "name": "Power (site)"},
-                {
-                    "entity": "sensor.kirk_hill_wind_farm_capacity_factor_owner",
-                    "name": "Capacity factor (owner)",
-                },
-                {
-                    "entity": "sensor.kirk_hill_wind_farm_capacity_factor_site",
-                    "name": "Capacity factor (site)",
-                },
-            ],
-        },
-        {
-            "type": "entities",
-            "title": "Farm physical readings",
-            "show_header_toggle": False,
-            "entities": [
-                {"entity": "sensor.kirk_hill_wind_farm_wind_speed", "name": "Wind speed"},
-                {"entity": "sensor.kirk_hill_wind_farm_active_turbines", "name": "Active turbines"},
-                {"entity": "sensor.kirk_hill_wind_farm_inactive_turbines", "name": "Inactive turbines"},
-                {"entity": "binary_sensor.kirk_hill_wind_farm_alarm", "name": "Alarm"},
-            ],
-        },
-        {
-            "type": "history-graph",
-            "title": "Farm power and wind (last 6 hours)",
-            "hours_to_show": 6,
-            "entities": [
-                "sensor.kirk_hill_wind_farm_power_owner",
-                "sensor.kirk_hill_wind_farm_power_site",
-                "sensor.kirk_hill_wind_farm_wind_speed",
-            ],
-        },
+    owner_generation_entities = [
+        "sensor.kirk_hill_wind_farm_generation_yesterday_owner",
+        "sensor.kirk_hill_wind_farm_generation_today_owner",
+        "sensor.kirk_hill_wind_farm_generation_week_owner",
+        "sensor.kirk_hill_wind_farm_generation_month_owner",
+        "sensor.kirk_hill_wind_farm_generation_ytd_owner",
+        "sensor.kirk_hill_wind_farm_generation_year_owner",
+        "sensor.kirk_hill_wind_farm_generation_alltime_owner",
     ]
-
-    turbine_status_tiles = {
-        "type": "grid",
-        "title": "Turbine status",
-        "columns": 4,
-        "square": False,
-        "cards": [
-            {"type": "tile", "entity": f"binary_sensor.turbine_t{i}_active", "name": f"T{i} active"}
-            for i in range(1, 9)
-        ],
-    }
-    overview_cards.append(turbine_status_tiles)
-
-    overview_cards.append(
-        {
-            "type": "map",
-            "title": "Turbine map",
-            "default_zoom": 15,
-            "entities": [f"sensor.turbine_t{i}_state" for i in range(1, 9)],
-        }
-    )
+    site_generation_entities = [
+        "sensor.kirk_hill_wind_farm_generation_yesterday_site",
+        "sensor.kirk_hill_wind_farm_generation_today_site",
+        "sensor.kirk_hill_wind_farm_generation_week_site",
+        "sensor.kirk_hill_wind_farm_generation_month_site",
+        "sensor.kirk_hill_wind_farm_generation_ytd_site",
+        "sensor.kirk_hill_wind_farm_generation_year_site",
+        "sensor.kirk_hill_wind_farm_generation_alltime_site",
+    ]
 
     turbine_cards = []
     for i in range(1, 9):
@@ -213,8 +164,116 @@ def _build_dashboard_config() -> dict:
                 "title": "Overview",
                 "path": "overview",
                 "icon": "mdi:wind-turbine",
-                "badges": [],
-                "cards": overview_cards,
+                "type": "sections",
+                "max_columns": 2,
+                "sections": [
+                    {
+                        "type": "grid",
+                        "column_span": 2,
+                        "cards": [
+                            {
+                                "type": "heading",
+                                "heading": "Kirk Hill Wind Farm",
+                                "heading_style": "title",
+                                "icon": "mdi:wind-turbine",
+                            }
+                        ],
+                    },
+                    {
+                        "type": "grid",
+                        "cards": [
+                            {
+                                "type": "heading",
+                                "heading": "Your share",
+                                "heading_style": "title",
+                            },
+                            {
+                                "type": "entities",
+                                "title": "Owner metrics",
+                                "show_header_toggle": False,
+                                "entities": [
+                                    "sensor.kirk_hill_wind_farm_power_owner",
+                                    "sensor.kirk_hill_wind_farm_capacity_factor_owner",
+                                    *owner_generation_entities,
+                                ],
+                            },
+                            {
+                                "type": "history-graph",
+                                "title": "Owner and wind (last 6 hours)",
+                                "hours_to_show": 6,
+                                "entities": [
+                                    "sensor.kirk_hill_wind_farm_power_owner",
+                                    "sensor.kirk_hill_wind_farm_wind_speed",
+                                ],
+                            },
+                            {
+                                "type": "heading",
+                                "heading": "Turbine map",
+                                "heading_style": "title",
+                            },
+                            {
+                                "type": "map",
+                                "title": "",
+                                "default_zoom": 15,
+                                "theme_mode": "auto",
+                                "entities": [
+                                    f"sensor.turbine_t{i}_state" for i in range(1, 9)
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "type": "grid",
+                        "cards": [
+                            {
+                                "type": "heading",
+                                "heading": "Whole site",
+                                "heading_style": "title",
+                            },
+                            {
+                                "type": "entities",
+                                "title": "Site metrics",
+                                "show_header_toggle": False,
+                                "entities": [
+                                    "sensor.kirk_hill_wind_farm_power_site",
+                                    "sensor.kirk_hill_wind_farm_capacity_factor_site",
+                                    "sensor.kirk_hill_wind_farm_wind_speed",
+                                    "sensor.kirk_hill_wind_farm_active_turbines",
+                                    "sensor.kirk_hill_wind_farm_inactive_turbines",
+                                    "binary_sensor.kirk_hill_wind_farm_alarm",
+                                    *site_generation_entities,
+                                ],
+                            },
+                            {
+                                "type": "history-graph",
+                                "title": "Site and wind (last 6 hours)",
+                                "hours_to_show": 6,
+                                "entities": [
+                                    "sensor.kirk_hill_wind_farm_power_site",
+                                    "sensor.kirk_hill_wind_farm_wind_speed",
+                                ],
+                            },
+                            {
+                                "type": "heading",
+                                "heading": "Turbine status",
+                                "heading_style": "title",
+                            },
+                            {
+                                "type": "grid",
+                                "columns": 2,
+                                "square": False,
+                                "cards": [
+                                    {
+                                        "type": "tile",
+                                        "entity": f"binary_sensor.turbine_t{i}_active",
+                                        "name": f"T{i}",
+                                    }
+                                    for i in range(1, 9)
+                                ],
+                            },
+                        ],
+                    },
+                ],
             },
             {
                 "title": "Turbines",

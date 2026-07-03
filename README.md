@@ -87,11 +87,11 @@ Per turbine device (`Turbine T1` ... `Turbine T8`):
 When you add the integration, it auto-creates a Lovelace dashboard tab (`kirk-hill-wind-dashboard`) in the sidebar.
 
 The generated dashboard includes:
-- owner vs site farm metrics
-- farm wind and turbine availability
-- per-turbine owner/site power and capacity sensors
-- turbine map
-- turbine latitude/longitude attribute list
+- owner and site overview sections
+- all owner/site generation timeframe entities
+- live farm wind and turbine availability
+- a turbine map section styled closer to the standalone example
+- full per-turbine owner/site power, capacity, wind, state, and active status
 
 For manual import or customization, a dashboard YAML is also provided at [`dashboards/kirkhill_wind_scada.yaml`](dashboards/kirkhill_wind_scada.yaml).
 

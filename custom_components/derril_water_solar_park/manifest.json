@@ -1,0 +1,12 @@
+{
+  "domain": "derril_water_solar_park",
+  "name": "Derril Water Solar Park",
+  "version": "1.0.0",
+  "documentation": "https://github.com/MJP-76/DerrilWaterSolarPark",
+  "issue_tracker": "https://github.com/MJP-76/DerrilWaterSolarPark/issues",
+  "codeowners": ["@MJP-76"],
+  "iot_class": "cloud_polling",
+  "config_flow": true,
+  "requirements": [],
+  "integration_type": "hub"
+}

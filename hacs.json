@@ -1,7 +1,7 @@
 {
-  "name": "Kirk Hill Wind Farm",
+  "name": "Derril Water Solar Park",
   "render_readme": true,
-  "domains": ["kirkhill_wind"],
+  "domains": ["derril_water_solar_park"],
   "country": "GB",
   "homeassistant": "2024.1.0",
   "content_in_root": false

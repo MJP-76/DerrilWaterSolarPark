@@ -1,7 +1,7 @@
 [project]
-name = "kirkhill-wind-scada"
+name = "derril-water-solar-park"
 version = "1.0.0"
-description = "SCADA wind farm simulator for Home Assistant"
+description = "Starter Home Assistant integration for a solar farm project"
 
 [tool.black]
 line-length = 88

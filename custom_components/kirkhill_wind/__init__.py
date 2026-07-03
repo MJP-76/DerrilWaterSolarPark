@@ -219,7 +219,7 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
         )
 
     return {
-        "title": "Kirk Hill Wind Farm",
+        "title": "Wind Farm",
         "views": [
             {
                 "title": "Overview",
@@ -234,7 +234,7 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                         "cards": [
                             {
                                 "type": "heading",
-                                "heading": "Kirk Hill Wind Farm",
+                                "heading": "Wind Farm",
                                 "heading_style": "title",
                                 "icon": "mdi:wind-turbine",
                             }

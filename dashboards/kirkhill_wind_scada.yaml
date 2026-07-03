@@ -1,4 +1,4 @@
-title: Kirk Hill Wind Farm
+title: Wind Farm
 views:
   - title: Overview
     path: overview
@@ -10,7 +10,7 @@ views:
         column_span: 2
         cards:
           - type: heading
-            heading: Kirk Hill Wind Farm
+            heading: Wind Farm
             heading_style: title
             icon: mdi:wind-turbine
 

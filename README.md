@@ -15,7 +15,7 @@ It pulls current data for both OpenAPI scopes:
 - `site` (whole-site values)
 
 
-<br>And here is my shameless plug, If you find this integration useful, you can support my work here:
+<br>If you find this integration useful, you can support my work here:
 
 <a href="https://www.buymeacoffee.com/mjp76" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
@@ -73,7 +73,7 @@ After setup, the **Configure** options let you change:
 
 Farm hub device:
 - Power (owner) [kW]
-- Power (site) [kW]
+- Power (site) [MW]
 - Capacity factor (owner) [%]
 - Capacity factor (site) [%]
 - Generation (yesterday) [kWh] for owner and site
@@ -101,7 +101,7 @@ Per turbine device (`Turbine T1` ... `Turbine T8`):
 
 ## Dashboard
 
-When you add the integration, it auto-creates a Lovelace dashboard tab (`kirk-hill-wind-dashboard`) in the sidebar.
+When you add the integration, it can auto-create a Lovelace dashboard tab (`kirk-hill-wind-dashboard`) in the sidebar.
 
 The generated dashboard includes:
 - owner and site overview sections
@@ -110,6 +110,7 @@ The generated dashboard includes:
 - a turbine map section styled closer to the standalone example
 - full per-turbine owner/site power, capacity, wind, state, and active status
 - generation display cards that switch between **kWh** and **MWh** automatically and show **2 decimal places**
+- a simplified visible dashboard title of **Wind Farm**
 
 The generated dashboard now uses the **live entity registry** for the current config entry, so it follows your real entity IDs instead of relying on hardcoded names.
 

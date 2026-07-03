@@ -207,13 +207,19 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                 "type": "entities",
                 "title": f"Turbine {turbine_id}",
                 "entities": [
-                    turbine(turbine_id, "owner_power"),
-                    turbine(turbine_id, "site_power"),
-                    turbine(turbine_id, "owner_capacity_factor"),
-                    turbine(turbine_id, "site_capacity_factor"),
-                    turbine(turbine_id, "wind_speed"),
-                    turbine(turbine_id, "state_text"),
-                    turbine(turbine_id, "active"),
+                    {"entity": turbine(turbine_id, "owner_power"), "name": "Owner power"},
+                    {"entity": turbine(turbine_id, "site_power"), "name": "Site power"},
+                    {
+                        "entity": turbine(turbine_id, "owner_capacity_factor"),
+                        "name": "Owner capacity factor",
+                    },
+                    {
+                        "entity": turbine(turbine_id, "site_capacity_factor"),
+                        "name": "Site capacity factor",
+                    },
+                    {"entity": turbine(turbine_id, "wind_speed"), "name": "Wind speed"},
+                    {"entity": turbine(turbine_id, "state_text"), "name": "State"},
+                    {"entity": turbine(turbine_id, "active"), "name": "Active"},
                 ],
             }
         )
@@ -248,19 +254,25 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                 "heading": "Your share",
                                 "heading_style": "title",
                             },
+                            _generation_markdown_card(
+                                "Owner generation",
+                                owner_generation_entities,
+                            ),
                             {
                                 "type": "entities",
                                 "title": "Owner metrics",
                                 "show_header_toggle": False,
                                 "entities": [
-                                    farm_scoped("owner", "farm_power"),
-                                    farm_scoped("owner", "farm_capacity_factor"),
+                                    {
+                                        "entity": farm_scoped("owner", "farm_power"),
+                                        "name": "Owner power",
+                                    },
+                                    {
+                                        "entity": farm_scoped("owner", "farm_capacity_factor"),
+                                        "name": "Owner capacity factor",
+                                    },
                                 ],
                             },
-                            _generation_markdown_card(
-                                "Owner generation",
-                                owner_generation_entities,
-                            ),
                             {
                                 "type": "history-graph",
                                 "title": "Owner and wind (last 6 hours)",
@@ -294,23 +306,35 @@ def _build_dashboard_config(hass: HomeAssistant, entry: ConfigEntry) -> dict:
                                 "heading": "Whole site",
                                 "heading_style": "title",
                             },
+                            _generation_markdown_card(
+                                "Site generation",
+                                site_generation_entities,
+                            ),
                             {
                                 "type": "entities",
                                 "title": "Site metrics",
                                 "show_header_toggle": False,
                                 "entities": [
-                                    farm_scoped("site", "farm_power"),
-                                    farm_scoped("site", "farm_capacity_factor"),
-                                    farm("farm_wind_speed"),
-                                    farm("farm_active_turbines"),
-                                    farm("farm_inactive_turbines"),
-                                    farm("farm_alarm"),
+                                    {
+                                        "entity": farm_scoped("site", "farm_power"),
+                                        "name": "Site power",
+                                    },
+                                    {
+                                        "entity": farm_scoped("site", "farm_capacity_factor"),
+                                        "name": "Site capacity factor",
+                                    },
+                                    {"entity": farm("farm_wind_speed"), "name": "Wind speed"},
+                                    {
+                                        "entity": farm("farm_active_turbines"),
+                                        "name": "Active turbines",
+                                    },
+                                    {
+                                        "entity": farm("farm_inactive_turbines"),
+                                        "name": "Inactive turbines",
+                                    },
+                                    {"entity": farm("farm_alarm"), "name": "Alarm"},
                                 ],
                             },
-                            _generation_markdown_card(
-                                "Site generation",
-                                site_generation_entities,
-                            ),
                             {
                                 "type": "history-graph",
                                 "title": "Site and wind (last 6 hours)",

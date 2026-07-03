@@ -105,11 +105,13 @@ When you add the integration, it can auto-create a Lovelace dashboard tab (`kirk
 
 The generated dashboard includes:
 - owner and site overview sections
+- owner and site generation cards shown first in each overview section
 - all owner/site generation timeframe entities
 - live farm wind and turbine availability
 - a turbine map section styled closer to the standalone example
 - full per-turbine owner/site power, capacity, wind, state, and active status
 - generation display cards that switch between **kWh** and **MWh** automatically and show **2 decimal places**
+- simplified visible labels that remove the redundant **Kirk Hill** prefix
 - a simplified visible dashboard title of **Wind Farm**
 
 The generated dashboard now uses the **live entity registry** for the current config entry, so it follows your real entity IDs instead of relying on hardcoded names.

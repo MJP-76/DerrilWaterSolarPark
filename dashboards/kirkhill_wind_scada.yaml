@@ -19,12 +19,6 @@ views:
           - type: heading
             heading: Your share
             heading_style: title
-          - type: entities
-            title: Owner metrics
-            show_header_toggle: false
-            entities:
-              - sensor.kirk_hill_wind_farm_power_owner
-              - sensor.kirk_hill_wind_farm_capacity_factor_owner
           - type: markdown
             title: Owner generation
             content: |
@@ -35,6 +29,14 @@ views:
               - **YTD:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_ytd_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
               - **Year:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_year_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
               - **All time:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_alltime_owner', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+          - type: entities
+            title: Owner metrics
+            show_header_toggle: false
+            entities:
+              - entity: sensor.kirk_hill_wind_farm_power_owner
+                name: Owner power
+              - entity: sensor.kirk_hill_wind_farm_capacity_factor_owner
+                name: Owner capacity factor
           - type: history-graph
             title: Owner and wind (last 6 hours)
             hours_to_show: 6
@@ -63,16 +65,6 @@ views:
           - type: heading
             heading: Whole site
             heading_style: title
-          - type: entities
-            title: Site metrics
-            show_header_toggle: false
-            entities:
-              - sensor.kirk_hill_wind_farm_power_site
-              - sensor.kirk_hill_wind_farm_capacity_factor_site
-              - sensor.kirk_hill_wind_farm_wind_speed
-              - sensor.kirk_hill_wind_farm_active_turbines
-              - sensor.kirk_hill_wind_farm_inactive_turbines
-              - binary_sensor.kirk_hill_wind_farm_alarm
           - type: markdown
             title: Site generation
             content: |
@@ -83,6 +75,22 @@ views:
               - **YTD:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_ytd_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
               - **Year:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_year_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
               - **All time:** {% set v = state_attr('sensor.kirk_hill_wind_farm_generation_alltime_site', 'raw_generation_kwh') %}{% if v is not none %}{% set n = v | float(0) %}{% if n >= 1000 %}{{ '%.2f' | format(n / 1000) }} MWh{% else %}{{ '%.2f' | format(n) }} kWh{% endif %}{% else %}—{% endif %}
+          - type: entities
+            title: Site metrics
+            show_header_toggle: false
+            entities:
+              - entity: sensor.kirk_hill_wind_farm_power_site
+                name: Site power
+              - entity: sensor.kirk_hill_wind_farm_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.kirk_hill_wind_farm_wind_speed
+                name: Wind speed
+              - entity: sensor.kirk_hill_wind_farm_active_turbines
+                name: Active turbines
+              - entity: sensor.kirk_hill_wind_farm_inactive_turbines
+                name: Inactive turbines
+              - entity: binary_sensor.kirk_hill_wind_farm_alarm
+                name: Alarm
           - type: history-graph
             title: Site and wind (last 6 hours)
             hours_to_show: 6
@@ -132,80 +140,136 @@ views:
           - type: entities
             title: Turbine T1
             entities:
-              - sensor.turbine_t1_power_owner
-              - sensor.turbine_t1_power_site
-              - sensor.turbine_t1_capacity_factor_owner
-              - sensor.turbine_t1_capacity_factor_site
-              - sensor.turbine_t1_wind_speed
-              - sensor.turbine_t1_state
-              - binary_sensor.turbine_t1_active
+              - entity: sensor.turbine_t1_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t1_power_site
+                name: Site power
+              - entity: sensor.turbine_t1_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t1_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t1_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t1_state
+                name: State
+              - entity: binary_sensor.turbine_t1_active
+                name: Active
           - type: entities
             title: Turbine T2
             entities:
-              - sensor.turbine_t2_power_owner
-              - sensor.turbine_t2_power_site
-              - sensor.turbine_t2_capacity_factor_owner
-              - sensor.turbine_t2_capacity_factor_site
-              - sensor.turbine_t2_wind_speed
-              - sensor.turbine_t2_state
-              - binary_sensor.turbine_t2_active
+              - entity: sensor.turbine_t2_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t2_power_site
+                name: Site power
+              - entity: sensor.turbine_t2_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t2_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t2_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t2_state
+                name: State
+              - entity: binary_sensor.turbine_t2_active
+                name: Active
           - type: entities
             title: Turbine T3
             entities:
-              - sensor.turbine_t3_power_owner
-              - sensor.turbine_t3_power_site
-              - sensor.turbine_t3_capacity_factor_owner
-              - sensor.turbine_t3_capacity_factor_site
-              - sensor.turbine_t3_wind_speed
-              - sensor.turbine_t3_state
-              - binary_sensor.turbine_t3_active
+              - entity: sensor.turbine_t3_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t3_power_site
+                name: Site power
+              - entity: sensor.turbine_t3_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t3_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t3_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t3_state
+                name: State
+              - entity: binary_sensor.turbine_t3_active
+                name: Active
           - type: entities
             title: Turbine T4
             entities:
-              - sensor.turbine_t4_power_owner
-              - sensor.turbine_t4_power_site
-              - sensor.turbine_t4_capacity_factor_owner
-              - sensor.turbine_t4_capacity_factor_site
-              - sensor.turbine_t4_wind_speed
-              - sensor.turbine_t4_state
-              - binary_sensor.turbine_t4_active
+              - entity: sensor.turbine_t4_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t4_power_site
+                name: Site power
+              - entity: sensor.turbine_t4_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t4_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t4_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t4_state
+                name: State
+              - entity: binary_sensor.turbine_t4_active
+                name: Active
           - type: entities
             title: Turbine T5
             entities:
-              - sensor.turbine_t5_power_owner
-              - sensor.turbine_t5_power_site
-              - sensor.turbine_t5_capacity_factor_owner
-              - sensor.turbine_t5_capacity_factor_site
-              - sensor.turbine_t5_wind_speed
-              - sensor.turbine_t5_state
-              - binary_sensor.turbine_t5_active
+              - entity: sensor.turbine_t5_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t5_power_site
+                name: Site power
+              - entity: sensor.turbine_t5_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t5_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t5_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t5_state
+                name: State
+              - entity: binary_sensor.turbine_t5_active
+                name: Active
           - type: entities
             title: Turbine T6
             entities:
-              - sensor.turbine_t6_power_owner
-              - sensor.turbine_t6_power_site
-              - sensor.turbine_t6_capacity_factor_owner
-              - sensor.turbine_t6_capacity_factor_site
-              - sensor.turbine_t6_wind_speed
-              - sensor.turbine_t6_state
-              - binary_sensor.turbine_t6_active
+              - entity: sensor.turbine_t6_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t6_power_site
+                name: Site power
+              - entity: sensor.turbine_t6_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t6_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t6_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t6_state
+                name: State
+              - entity: binary_sensor.turbine_t6_active
+                name: Active
           - type: entities
             title: Turbine T7
             entities:
-              - sensor.turbine_t7_power_owner
-              - sensor.turbine_t7_power_site
-              - sensor.turbine_t7_capacity_factor_owner
-              - sensor.turbine_t7_capacity_factor_site
-              - sensor.turbine_t7_wind_speed
-              - sensor.turbine_t7_state
-              - binary_sensor.turbine_t7_active
+              - entity: sensor.turbine_t7_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t7_power_site
+                name: Site power
+              - entity: sensor.turbine_t7_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t7_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t7_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t7_state
+                name: State
+              - entity: binary_sensor.turbine_t7_active
+                name: Active
           - type: entities
             title: Turbine T8
             entities:
-              - sensor.turbine_t8_power_owner
-              - sensor.turbine_t8_power_site
-              - sensor.turbine_t8_capacity_factor_owner
-              - sensor.turbine_t8_capacity_factor_site
-              - sensor.turbine_t8_wind_speed
-              - sensor.turbine_t8_state
-              - binary_sensor.turbine_t8_active
+              - entity: sensor.turbine_t8_power_owner
+                name: Owner power
+              - entity: sensor.turbine_t8_power_site
+                name: Site power
+              - entity: sensor.turbine_t8_capacity_factor_owner
+                name: Owner capacity factor
+              - entity: sensor.turbine_t8_capacity_factor_site
+                name: Site capacity factor
+              - entity: sensor.turbine_t8_wind_speed
+                name: Wind speed
+              - entity: sensor.turbine_t8_state
+                name: State
+              - entity: binary_sensor.turbine_t8_active
+                name: Active

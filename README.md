@@ -32,7 +32,7 @@ Or use my [Octopus Energy referral link](https://share.octopus.energy/iron-moose
 - Platform: `sensor`
 
 
-[derrilwater]: https://https://derrilwater.com/
+[derrilwater]: //https://derrilwater.com/
 [brands]: https://github.com/home-assistant/brands
 [hacs]: https://github.com/hacs/integration
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg

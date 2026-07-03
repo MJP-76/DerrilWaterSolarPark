@@ -2,20 +2,34 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to Kirk Hill",
-        "description": "Enter your API key.",
+        "title": "Connect to Kirk Hill Wind Farm",
+        "description": "Enter your Kirk Hill dashboard API key. The site name is used as the integration title in Home Assistant.",
         "data": {
-          "api_key": "API Key"
+          "api_key": "API key",
+          "site_name": "Site name",
+          "base_url": "API base URL (advanced)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect to the Kirk Hill API.",
-      "invalid_response": "The API returned an invalid response.",
-      "unknown": "Unexpected error."
+      "auth_failed": "Invalid API key. Check your key and try again.",
+      "cannot_connect": "Cannot connect to the Kirk Hill API. Check your network and base URL.",
+      "unknown": "Unexpected error. Check the Home Assistant logs."
     },
     "abort": {
-      "already_configured": "This account has already been configured."
+      "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kirk Hill Wind Farm options",
+        "description": "Adjust how often Home Assistant polls the API.",
+        "data": {
+          "scan_interval": "Poll interval (seconds)"
+        }
+      }
     }
   }
 }
+

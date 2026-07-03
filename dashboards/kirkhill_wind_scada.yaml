@@ -1,0 +1,246 @@
+title: Kirk Hill Wind Farm
+views:
+  - title: Overview
+    path: overview
+    icon: mdi:wind-turbine
+    badges: []
+    cards:
+      - type: heading
+        heading: Kirk Hill Wind Farm API Overview
+        heading_style: title
+        icon: mdi:wind-turbine
+
+      - type: entities
+        title: Farm scope comparison
+        show_header_toggle: false
+        entities:
+          - entity: sensor.kirk_hill_wind_farm_power_owner
+            name: Power (owner)
+          - entity: sensor.kirk_hill_wind_farm_power_site
+            name: Power (site)
+          - entity: sensor.kirk_hill_wind_farm_capacity_factor_owner
+            name: Capacity factor (owner)
+          - entity: sensor.kirk_hill_wind_farm_capacity_factor_site
+            name: Capacity factor (site)
+
+      - type: entities
+        title: Farm physical readings
+        show_header_toggle: false
+        entities:
+          - entity: sensor.kirk_hill_wind_farm_wind_speed
+            name: Wind speed
+          - entity: sensor.kirk_hill_wind_farm_active_turbines
+            name: Active turbines
+          - entity: sensor.kirk_hill_wind_farm_inactive_turbines
+            name: Inactive turbines
+          - entity: binary_sensor.kirk_hill_wind_farm_alarm
+            name: Alarm
+
+      - type: history-graph
+        title: Farm power and wind (last 6 hours)
+        hours_to_show: 6
+        entities:
+          - entity: sensor.kirk_hill_wind_farm_power_owner
+          - entity: sensor.kirk_hill_wind_farm_power_site
+          - entity: sensor.kirk_hill_wind_farm_wind_speed
+
+      - type: grid
+        title: Turbine status
+        columns: 4
+        square: false
+        cards:
+          - type: tile
+            entity: binary_sensor.turbine_t1_active
+            name: T1 active
+          - type: tile
+            entity: binary_sensor.turbine_t2_active
+            name: T2 active
+          - type: tile
+            entity: binary_sensor.turbine_t3_active
+            name: T3 active
+          - type: tile
+            entity: binary_sensor.turbine_t4_active
+            name: T4 active
+          - type: tile
+            entity: binary_sensor.turbine_t5_active
+            name: T5 active
+          - type: tile
+            entity: binary_sensor.turbine_t6_active
+            name: T6 active
+          - type: tile
+            entity: binary_sensor.turbine_t7_active
+            name: T7 active
+          - type: tile
+            entity: binary_sensor.turbine_t8_active
+            name: T8 active
+
+      - type: map
+        title: Turbine map
+        default_zoom: 15
+        entities:
+          - entity: sensor.turbine_t1_state
+          - entity: sensor.turbine_t2_state
+          - entity: sensor.turbine_t3_state
+          - entity: sensor.turbine_t4_state
+          - entity: sensor.turbine_t5_state
+          - entity: sensor.turbine_t6_state
+          - entity: sensor.turbine_t7_state
+          - entity: sensor.turbine_t8_state
+
+      - type: entities
+        title: Turbine coordinates
+        show_header_toggle: false
+        entities:
+          - type: attribute
+            entity: sensor.turbine_t1_state
+            attribute: latitude
+            name: T1 latitude
+          - type: attribute
+            entity: sensor.turbine_t1_state
+            attribute: longitude
+            name: T1 longitude
+          - type: attribute
+            entity: sensor.turbine_t2_state
+            attribute: latitude
+            name: T2 latitude
+          - type: attribute
+            entity: sensor.turbine_t2_state
+            attribute: longitude
+            name: T2 longitude
+          - type: attribute
+            entity: sensor.turbine_t3_state
+            attribute: latitude
+            name: T3 latitude
+          - type: attribute
+            entity: sensor.turbine_t3_state
+            attribute: longitude
+            name: T3 longitude
+          - type: attribute
+            entity: sensor.turbine_t4_state
+            attribute: latitude
+            name: T4 latitude
+          - type: attribute
+            entity: sensor.turbine_t4_state
+            attribute: longitude
+            name: T4 longitude
+          - type: attribute
+            entity: sensor.turbine_t5_state
+            attribute: latitude
+            name: T5 latitude
+          - type: attribute
+            entity: sensor.turbine_t5_state
+            attribute: longitude
+            name: T5 longitude
+          - type: attribute
+            entity: sensor.turbine_t6_state
+            attribute: latitude
+            name: T6 latitude
+          - type: attribute
+            entity: sensor.turbine_t6_state
+            attribute: longitude
+            name: T6 longitude
+          - type: attribute
+            entity: sensor.turbine_t7_state
+            attribute: latitude
+            name: T7 latitude
+          - type: attribute
+            entity: sensor.turbine_t7_state
+            attribute: longitude
+            name: T7 longitude
+          - type: attribute
+            entity: sensor.turbine_t8_state
+            attribute: latitude
+            name: T8 latitude
+          - type: attribute
+            entity: sensor.turbine_t8_state
+            attribute: longitude
+            name: T8 longitude
+
+  - title: Turbines
+    path: turbines
+    icon: mdi:wind-turbine
+    cards:
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: entities
+            title: Turbine T1
+            entities:
+              - sensor.turbine_t1_power_owner
+              - sensor.turbine_t1_power_site
+              - sensor.turbine_t1_capacity_factor_owner
+              - sensor.turbine_t1_capacity_factor_site
+              - sensor.turbine_t1_wind_speed
+              - sensor.turbine_t1_state
+              - binary_sensor.turbine_t1_active
+          - type: entities
+            title: Turbine T2
+            entities:
+              - sensor.turbine_t2_power_owner
+              - sensor.turbine_t2_power_site
+              - sensor.turbine_t2_capacity_factor_owner
+              - sensor.turbine_t2_capacity_factor_site
+              - sensor.turbine_t2_wind_speed
+              - sensor.turbine_t2_state
+              - binary_sensor.turbine_t2_active
+          - type: entities
+            title: Turbine T3
+            entities:
+              - sensor.turbine_t3_power_owner
+              - sensor.turbine_t3_power_site
+              - sensor.turbine_t3_capacity_factor_owner
+              - sensor.turbine_t3_capacity_factor_site
+              - sensor.turbine_t3_wind_speed
+              - sensor.turbine_t3_state
+              - binary_sensor.turbine_t3_active
+          - type: entities
+            title: Turbine T4
+            entities:
+              - sensor.turbine_t4_power_owner
+              - sensor.turbine_t4_power_site
+              - sensor.turbine_t4_capacity_factor_owner
+              - sensor.turbine_t4_capacity_factor_site
+              - sensor.turbine_t4_wind_speed
+              - sensor.turbine_t4_state
+              - binary_sensor.turbine_t4_active
+          - type: entities
+            title: Turbine T5
+            entities:
+              - sensor.turbine_t5_power_owner
+              - sensor.turbine_t5_power_site
+              - sensor.turbine_t5_capacity_factor_owner
+              - sensor.turbine_t5_capacity_factor_site
+              - sensor.turbine_t5_wind_speed
+              - sensor.turbine_t5_state
+              - binary_sensor.turbine_t5_active
+          - type: entities
+            title: Turbine T6
+            entities:
+              - sensor.turbine_t6_power_owner
+              - sensor.turbine_t6_power_site
+              - sensor.turbine_t6_capacity_factor_owner
+              - sensor.turbine_t6_capacity_factor_site
+              - sensor.turbine_t6_wind_speed
+              - sensor.turbine_t6_state
+              - binary_sensor.turbine_t6_active
+          - type: entities
+            title: Turbine T7
+            entities:
+              - sensor.turbine_t7_power_owner
+              - sensor.turbine_t7_power_site
+              - sensor.turbine_t7_capacity_factor_owner
+              - sensor.turbine_t7_capacity_factor_site
+              - sensor.turbine_t7_wind_speed
+              - sensor.turbine_t7_state
+              - binary_sensor.turbine_t7_active
+          - type: entities
+            title: Turbine T8
+            entities:
+              - sensor.turbine_t8_power_owner
+              - sensor.turbine_t8_power_site
+              - sensor.turbine_t8_capacity_factor_owner
+              - sensor.turbine_t8_capacity_factor_site
+              - sensor.turbine_t8_wind_speed
+              - sensor.turbine_t8_state
+              - binary_sensor.turbine_t8_active

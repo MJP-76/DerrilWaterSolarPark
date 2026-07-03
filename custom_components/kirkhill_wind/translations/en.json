@@ -3,15 +3,32 @@
   "config": {
     "step": {
       "user": {
+        "title": "Connect to Kirk Hill Wind Farm",
+        "description": "Enter your Kirk Hill dashboard API key.",
         "data": {
-          "api_key": "API Key",
-          "scope": "Scope"
+          "api_key": "API key",
+          "site_name": "Site name",
+          "base_url": "API base URL (advanced)"
         }
       }
     },
     "error": {
       "auth_failed": "Invalid API key",
-      "cannot_connect": "Cannot connect to API"
+      "cannot_connect": "Cannot connect to the API",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single instance of Kirk Hill Wind Farm is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kirk Hill Wind Farm options",
+        "data": {
+          "scan_interval": "Poll interval (seconds)"
+        }
+      }
     }
   }
 }

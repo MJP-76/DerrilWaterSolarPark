@@ -1,92 +1,114 @@
+"""Coordinator for the Kirk Hill Wind Farm integration."""
+from __future__ import annotations
+
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import datetime, timedelta
 
+import aiohttp
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import KirkHillWindApi
-from .const import BASE_URL, DEFAULT_SCAN_INTERVAL, TIME_RANGES
+from .api import KirkHillApiClient
+from .const import (
+    CONF_API_KEY,
+    CONF_BASE_URL,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_BASE_URL,
+    DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
+    SCOPES,
+    SCOPE_OWNER,
+    SCOPE_SITE,
+    TIMEFRAME_ORDER,
+    TIMEFRAME_TO_RANGE,
+)
+from .exceptions import KirkHillApiError
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class KirkHillWindCoordinator(DataUpdateCoordinator):
-    """Kirk Hill Wind Farm coordinator."""
+    """Fetches current data from owner/site scopes on each tick."""
 
-    def __init__(self, hass, entry):
-        """Initialise coordinator."""
-        self.hass = hass
-        self.entry = entry
-
-        self.api = KirkHillWindApi(
-            base_url=BASE_URL,
-            api_key=entry.data["api_key"],
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        scan_interval = entry.options.get(
+            CONF_SCAN_INTERVAL,
+            entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
         )
-
         super().__init__(
             hass,
-            logger=_LOGGER,
-            name="kirkhill_wind",
-            update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=timedelta(seconds=scan_interval),
+        )
+        self.entry = entry
+        self.client = KirkHillApiClient(
+            api_key=entry.data[CONF_API_KEY],
+            base_url=entry.data.get(CONF_BASE_URL, DEFAULT_BASE_URL),
         )
 
-    @property
-    def session(self):
-        """Return shared aiohttp session."""
-        return async_get_clientsession(self.hass)
+    def apply_options(self) -> None:
+        """Re-apply scan interval when options change."""
+        scan_interval = self.entry.options.get(
+            CONF_SCAN_INTERVAL,
+            self.entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        )
+        self.update_interval = timedelta(seconds=scan_interval)
 
-    async def _async_update_data(self):
-        """Fetch data from API."""
-        try:
-            session = self.session
+    async def _async_update_data(self) -> dict:
+        """Fetch current owner/site data, turbine coordinates, and range summaries."""
+        async with aiohttp.ClientSession() as session:
+            try:
+                owner_data, site_data, site_turbines, timeframe_summaries = await asyncio.gather(
+                    self.client.get_current(session, SCOPE_OWNER),
+                    self.client.get_current(session, SCOPE_SITE),
+                    self.client.get_turbines(session, SCOPE_SITE),
+                    self._fetch_timeframe_summaries(session),
+                )
+            except KirkHillApiError as exc:
+                raise UpdateFailed(str(exc)) from exc
 
-            owner = await self._fetch_scope(session, "owner")
-            site = await self._fetch_scope(session, "site")
+        coordinates: dict[str, dict[str, float | str | None]] = {}
+        for row in site_turbines:
+            turbine_id = row.get("id")
+            coord = row.get("coordinates") or {}
+            if turbine_id:
+                coordinates[turbine_id] = {
+                    "latitude": coord.get("latitude"),
+                    "longitude": coord.get("longitude"),
+                    "source": coord.get("source"),
+                    "openstreetmap_node_id": coord.get("openstreetmap_node_id"),
+                }
 
-            _LOGGER.debug("Owner data fetched successfully")
-            _LOGGER.debug("Site data fetched successfully")
+        return {
+            SCOPE_OWNER: owner_data,
+            SCOPE_SITE: site_data,
+            "coordinates": coordinates,
+            "timeframe_summaries": timeframe_summaries,
+        }
 
-            data = {
-                "owner": owner,
-                "site": site,
-            }
-            
-            _LOGGER.info("Coordinator data updated successfully")
-            return data
+    async def _fetch_timeframe_summaries(
+        self, session: aiohttp.ClientSession
+    ) -> dict[str, dict[str, dict]]:
+        tasks: list[tuple[str, str, asyncio.Task]] = []
 
-        except Exception as err:
-            _LOGGER.exception("Kirk Hill update failed")
-            raise UpdateFailed(str(err)) from err
+        for scope in SCOPES:
+            for timeframe in TIMEFRAME_ORDER:
+                range_value = TIMEFRAME_TO_RANGE[timeframe]
+                if timeframe == "year":
+                    range_value = str(datetime.now().year)
+                task = asyncio.create_task(
+                    self.client.get_summary(session, scope=scope, range_value=range_value)
+                )
+                tasks.append((scope, timeframe, task))
 
-    async def _fetch_scope(self, session, scope: str):
-        """Fetch all API endpoints for a scope."""
-        try:
-            summaries = await asyncio.gather(
-                *[self.api.summary(session, scope, range_name=range_name) for range_name in TIME_RANGES]
-            )
-            summaries_by_range = {
-                range_name: summary for range_name, summary in zip(TIME_RANGES, summaries)
-            }
+        results = await asyncio.gather(*(task for _, _, task in tasks))
 
-            generation, wind, turbines = await asyncio.gather(
-                self.api.generation(session, scope),
-                self.api.wind(session, scope),
-                self.api.turbines(session, scope),
-            )
+        summaries: dict[str, dict[str, dict]] = {scope: {} for scope in SCOPES}
+        for (scope, timeframe, _), payload in zip(tasks, results):
+            summaries[scope][timeframe] = payload.get("summary", {})
 
-            _LOGGER.debug(f"[{scope}] summary fetched")
-            _LOGGER.debug(f"[{scope}] generation fetched")
-            _LOGGER.debug(f"[{scope}] wind fetched")
-            _LOGGER.debug(f"[{scope}] turbines fetched")
-
-            return {
-                "summary": summaries_by_range.get("today", {}),
-                "summaries_by_range": summaries_by_range,
-                "generation": generation,
-                "wind": wind,
-                "turbines": turbines,
-            }
-        except Exception as err:
-            _LOGGER.error(f"Failed to fetch {scope} scope: {err}")
-            raise
+        return summaries

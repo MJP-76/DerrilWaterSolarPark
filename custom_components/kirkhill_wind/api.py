@@ -1,56 +1,78 @@
-import logging
+"""HTTP client for the Kirk Hill Wind Farm API."""
+from __future__ import annotations
 
-_LOGGER = logging.getLogger(__name__)
+import asyncio
+from typing import Any
+
+import aiohttp
+
+from .const import DEFAULT_BASE_URL, SCOPE_OWNER
+from .exceptions import KirkHillAuthError, KirkHillConnectionError
+
+TIMEOUT = aiohttp.ClientTimeout(total=20)
 
 
-class KirkHillWindApiError(Exception):
-    pass
+class KirkHillApiClient:
+    """Async HTTP client aligned with the Kirk Hill Wind Farm OpenAPI spec."""
 
-
-class KirkHillWindApi:
-    def __init__(self, base_url: str, api_key: str):
-        self._base_url = base_url
+    def __init__(self, api_key: str, base_url: str = DEFAULT_BASE_URL) -> None:
         self._api_key = api_key
+        self._base_url = base_url.rstrip("/")
 
-    async def request(self, session, path, params=None):
-        url = f"{self._base_url}{path}"
-
-        headers = {
+    @property
+    def _headers(self) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self._api_key}",
             "Accept": "application/json",
         }
-        headers["Authorization"] = "Bearer " + self._api_key
 
+    async def _get(
+        self, session: aiohttp.ClientSession, path: str, params: dict[str, str]
+    ) -> dict[str, Any]:
+        url = f"{self._base_url}{path}"
         try:
-            _LOGGER.debug(f"API request to {url} with params {params}")
-            async with session.get(url, headers=headers, params=params) as resp:
-                _LOGGER.debug(f"API response status: {resp.status}")
-                if resp.status >= 400:
-                    error_text = await resp.text()
-                    _LOGGER.error(f"API error {resp.status}: {error_text}")
-                    raise KirkHillWindApiError(error_text)
-                response = await resp.json()
-                _LOGGER.debug("Raw API response received")
-                # Extract the data field from the response
-                extracted = response.get("data", response)
-                _LOGGER.debug("Extracted data from response")
-                return extracted
-        except Exception as err:
-            _LOGGER.error(f"API request failed: {err}", exc_info=True)
+            async with session.get(
+                url, params=params, headers=self._headers, timeout=TIMEOUT
+            ) as resp:
+                if resp.status == 401:
+                    raise KirkHillAuthError("Invalid or missing API key")
+                resp.raise_for_status()
+                return await resp.json()
+        except KirkHillAuthError:
             raise
+        except aiohttp.ClientError as exc:
+            raise KirkHillConnectionError(str(exc)) from exc
+        except asyncio.TimeoutError as exc:
+            raise KirkHillConnectionError("Request timed out") from exc
 
-    async def summary(self, session, scope, range_name=None, year=None):
-        params = {"scope": scope}
-        if range_name:
-            params["range"] = range_name
-        if year is not None:
-            params["year"] = str(year)
-        return await self.request(session, "/api/v1/summary", params)
+    async def get_current(
+        self, session: aiohttp.ClientSession, scope: str = SCOPE_OWNER
+    ) -> dict[str, Any]:
+        """GET /api/v1/current?scope={scope}."""
+        body = await self._get(session, "/api/v1/current", {"scope": scope})
+        return body["data"]
 
-    async def generation(self, session, scope):
-        return await self.request(session, "/api/v1/generation", {"scope": scope})
+    async def get_turbines(
+        self, session: aiohttp.ClientSession, scope: str = SCOPE_OWNER
+    ) -> list[dict[str, Any]]:
+        """GET /api/v1/turbines?scope={scope}."""
+        body = await self._get(session, "/api/v1/turbines", {"scope": scope})
+        return body["data"]["turbines"]
 
-    async def wind(self, session, scope):
-        return await self.request(session, "/api/v1/wind-speed", {"scope": scope})
+    async def get_summary(
+        self,
+        session: aiohttp.ClientSession,
+        scope: str = SCOPE_OWNER,
+        range_value: str = "today",
+    ) -> dict[str, Any]:
+        """GET /api/v1/summary?scope={scope}&range={range_value}."""
+        body = await self._get(
+            session,
+            "/api/v1/summary",
+            {"scope": scope, "range": range_value},
+        )
+        return body["data"]
 
-    async def turbines(self, session, scope):
-        return await self.request(session, "/api/v1/turbines", {"scope": scope})
+    async def test(self, session: aiohttp.ClientSession) -> None:
+        """Validate the API key by making a minimal current request."""
+        await self.get_current(session, SCOPE_OWNER)

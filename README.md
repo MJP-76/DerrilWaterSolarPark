@@ -29,7 +29,9 @@ If you like my work:
 - Config flow with API key validation
 - Optional custom base URL (advanced)
 - Configurable polling interval via Options
-- Ready-to-import Lovelace dashboard YAML
+- Auto-generated Lovelace dashboard tab created during integration setup
+- Dashboard includes turbine map and coordinate list (lat/lon from API)
+- Dashboard YAML file is still included for manual import/customization
 
 ## Installation
 <br>[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
@@ -65,16 +67,16 @@ Per turbine device (`Turbine T1` ... `Turbine T8`):
 
 ## Dashboard
 
-A ready-made Lovelace dashboard is provided at [`dashboards/kirkhill_wind_scada.yaml`](dashboards/kirkhill_wind_scada.yaml) with:
+When you add the integration, it now auto-creates a Lovelace dashboard tab (`kirk-hill-wind-dashboard`) in the sidebar.
+
+The generated dashboard includes:
 - owner vs site farm metrics
 - farm wind and turbine availability
 - per-turbine owner/site power and capacity sensors
+- turbine map
+- turbine latitude/longitude attribute list
 
-To use it:
-1. Go to **Settings -> Dashboards -> Add Dashboard -> New dashboard from scratch**.
-2. Open the new dashboard, choose **Edit Dashboard -> ... -> Raw configuration editor**.
-3. Paste the contents of `dashboards/kirkhill_wind_scada.yaml`.
-4. If your entity IDs differ from the defaults, update the YAML entity IDs to match your instance.
+For manual import or customization, a dashboard YAML is also provided at [`dashboards/kirkhill_wind_scada.yaml`](dashboards/kirkhill_wind_scada.yaml).
 
 ## License
 

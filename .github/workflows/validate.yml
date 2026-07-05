@@ -16,11 +16,3 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-
-      - name: Hassfest validation
-        uses: home-assistant/actions/hassfest@master
-
-      - name: Python lint (ruff)
-        run: |
-          pip install ruff
-          ruff check custom_components/

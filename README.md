@@ -1,3 +1,5 @@
+> **MIGRATED** - This repository has been consolidated into [MJP-76/ha-addons](https://github.com/MJP-76/ha-addons). All future updates will be in that repo. Please migrate to the new repository.
+
 # Derril Water Solar Park
 <a href="https://www.home-assistant.io/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Home%20Assistant-41BDF5?style=flat-square&logo=homeassistant&logoColor=white" alt="Home Assistant"></a>
 <a href="https://github.com/hacs/integration" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS"></a>

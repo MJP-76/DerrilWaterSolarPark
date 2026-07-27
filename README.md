@@ -5,7 +5,7 @@
 [![HACS Validation][badge-hacs-validation]][workflow-hacs-validation]
 [![Hassfest][badge-hassfest]][workflow-hassfest]
 [![CI][badge-ci]][workflow-ci]
-[![GitHub Copilot][badge-copilot]][github-copilot]
+[![Built with AI][badge-ai]](https://openai.com)
 
 Home Assistant custom component for Derril Water Solar Park
 
@@ -39,10 +39,9 @@ If you find this project useful, and would like to help support its continued de
 [badge-hassfest]: https://img.shields.io/github/actions/workflow/status/MJP-76/DerrilWaterSolarPark/hassfest.yml?branch=main&label=Hassfest
 [badge-hacs-validation]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/validate.yml/badge.svg
 [badge-ci]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/ci.yml/badge.svg
-[badge-copilot]: https://img.shields.io/badge/GitHub%20Copilot-Built%20with-000000?style=flat-square&logo=githubcopilot
+[badge-ai]: https://img.shields.io/badge/Built_with-AI-black?logo=openai&logoColor=white
 [home-assistant]: https://www.home-assistant.io/
 [hacs]: https://github.com/hacs/integration
 [workflow-hacs-validation]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/validate.yml
 [workflow-hassfest]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/hassfest.yml
 [workflow-ci]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/ci.yml
-[github-copilot]: https://github.com/features/copilot

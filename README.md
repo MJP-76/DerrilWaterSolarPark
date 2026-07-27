@@ -43,7 +43,7 @@ If you find this project useful, and would like to help support its continued de
 [badge-ci]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/ci.yml/badge.svg
 [badge-ai]: https://img.shields.io/badge/Built_with-AI-black?logo=openai&logoColor=white
 [badge-release]: https://img.shields.io/badge/Release-v1.0.0-blue
-[badge-status]: https://img.shields.io/badge/Status-stable-brightgreen
+[badge-status]: https://img.shields.io/badge/Status-experimental-yellow
 [home-assistant]: https://www.home-assistant.io/
 [hacs]: https://github.com/hacs/integration
 [workflow-hacs-validation]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/validate.yml

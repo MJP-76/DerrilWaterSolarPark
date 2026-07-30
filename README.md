@@ -6,7 +6,7 @@
 [![Hassfest][badge-hassfest]][workflow-hassfest]
 [![CI][badge-ci]][workflow-ci]
 [![Release][badge-release]][releases]
-![Status][badge-status]
+[![Built with AI][badge-built-with-ai]][built-with-ai]
 
 Home Assistant custom component for Derril Water Solar Park
 
@@ -46,4 +46,5 @@ If you find this project useful, and would like to help support its continued de
 [workflow-ci]: https://github.com/MJP-76/DerrilWaterSolarPark/actions/workflows/ci.yml
 [badge-release]: https://img.shields.io/github/v/release/MJP-76/DerrilWaterSolarPark?style=flat&label=Release
 [releases]: https://github.com/MJP-76/DerrilWaterSolarPark/releases
-[badge-status]: https://img.shields.io/badge/Status-experimental-yellow
+[badge-built-with-ai]: https://img.shields.io/badge/Built%20with-AI-black?logo=openai&logoColor=white
+[built-with-ai]: https://openai.com
